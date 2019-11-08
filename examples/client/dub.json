@@ -1,0 +1,9 @@
+{
+  "description": "A minimal D application.",
+  "license": "proprietary",
+  "name": "client",
+  "targetType": "executable",
+  "dependencies":{
+    "msgtrans" : {"path": "../../"}
+  }
+}
