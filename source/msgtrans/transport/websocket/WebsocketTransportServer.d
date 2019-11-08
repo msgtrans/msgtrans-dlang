@@ -1,10 +1,11 @@
-module msgtrans.protocol.websocket.WsProtocol;
+module msgtrans.protocol.websocket.WebsocketTransportServer;
 
-import msgtrans.protocol.Protocol;
+import msgtrans.transport.TransportServer;
+
 import hunt.net.codec.Codec;
+
 import msgtrans.ConnectionEventBaseHandler;
 import hunt.http.server.HttpServerOptions;
-import msgtrans.protocol.websocket.WebsocketTransportSessionEventHandler;
 import hunt.http.HttpOptions;
 import hunt.http.server.ServerHttpHandler;
 import hunt.http.codec.http.stream;
@@ -16,13 +17,16 @@ import hunt.http.server.WebSocketHandler;
 import hunt.http.server.HttpServerHandler;
 import hunt.net.Connection;
 import msgtrans.ConnectionManager;
-import msgtrans.protocol.websocket.WebsocketTransportSessionEventHandler;
-import msgtrans.protocol.websocket.WsCodec;
-import msgtrans.GatewayApplication;
-import hunt.logging;
-import msgtrans.Session;
 
-class WsProtocol : Protocol {
+import msgtrans.transport.websocket.WebsocketEventHandler;
+import msgtrans.transport.websocket.WebsocketCodec;
+
+import hunt.logging;
+
+import msgtrans.transport.TransportSession;
+
+class WebsocketTransportServer : TranportServer
+{
 
     alias CloseCallBack = void delegate(Session connection);
 

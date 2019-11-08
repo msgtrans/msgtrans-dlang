@@ -1,6 +1,6 @@
 module msgtrans.protocol.websocket.WebsocketTransportSession;
 
-import msgtrans.Session;
+import msgtrans.transport.TransportSession;
 import msgtrans.MessageBuffer;
 
 import hunt.http.codec.websocket.frame;
@@ -10,9 +10,7 @@ import hunt.http.HttpConnection;
 import hunt.net;
 import hunt.String;
 
-import std.stdio;
-
-class WebSocketConnection : Session {
+class WebsocketTransportSession : TransportSession {
 
     private
     {
