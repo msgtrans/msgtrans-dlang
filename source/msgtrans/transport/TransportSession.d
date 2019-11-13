@@ -1,4 +1,4 @@
-module msgtrans.Session;
+module msgtrans.transport.TransportSession;
 
 import msgtrans.MessageBuffer;
 import msgtrans.Router;
@@ -9,34 +9,22 @@ import hunt.util.Serialize;
 import hunt.net;
 import hunt.logging;
 
-import google.protobuf;
 
 import std.stdint;
 import std.bitmanip;
 
-enum SESSION
-{
-    PROTOCOL = "PROTOCOL",
-    USER = "USER"
-}
+abstract class TransportSession {
 
-class TransportSession {
-
-public:
-    static void dispatchMessage(Session connection , MessageBuffer message )
+    private
     {
-        Command handler =  Router.instance().getProcessHandler(message.messageId);
-        if (handler !is null)
-        {
-            handler.execute(connection,message);
-        } else {
-            logError("Unknown msgType %d",message.messageId );
-        }
+        long _id;
     }
+    
+    abstract long id() { return 0; }
 
     abstract void sendMsg(MessageBuffer message) {}
 
-    abstract string getProtocol() { return null;}
+    // abstract string getProtocol() { return null;}
 
     abstract Connection getConnection() {return null;}
 

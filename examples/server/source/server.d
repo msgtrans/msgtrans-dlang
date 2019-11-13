@@ -1,26 +1,38 @@
-import std.stdio;
-
 import hunt.net;
 import hunt.logging;
 
-import msgtrans.protocol.protobuf.TcpConnectionEventHandler;
-import msgtrans.protocol.Protocol;
-import msgtrans.transport.tcp.TcpProtocol;
-import msgtrans.protocol.http.HttpProtocol;
-import msgtrans.GatewayApplication;
-import msgtrans.protocol.websocket.WsProtocol;
+import msgtrans;
+import message.Constants;
+import message.HelloMessage;
+import message.WelcomeMessage;
 
 import core.thread;
+import core.time : seconds;
+
 
 void main()
 {
-	GatewayApplication app = GatewayApplication.instance();
+    MessageTransportServer server = new MessageTransportServer();
 
-	ProtobufProtocol tcp = new ProtobufProtocol("0.0.0.0",12001);
-	WsProtocol ws = new WsProtocol("0.0.0.0", 18181);
+    server.addChannel(new TcpTransportServer(9001));
+    // server.addChannel(new TcpTransportServer(9003));
+    // server.addChannel(new WebsocketTransport(9002, "/test"));
 
-	app.addServer(tcp);
-	app.addServer(ws);
+    server.registerExecutor!MyExecutor();
 
-	app.run();
+    server.start();	 // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
+}
+
+
+class MyExecutor : MessageExecutor
+{
+    @MessageId(MESSAGE.HELLO)
+    void hello(TransportSession ctx, ubyte[] data)
+    {
+        string msg = cast(string) data;
+
+        string welcome = "Welcome " ~ msg;
+
+        // ctx.send(MESSAGE.WELCOME, welcome.dup);
+    }
 }

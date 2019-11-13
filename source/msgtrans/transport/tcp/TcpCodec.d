@@ -7,14 +7,14 @@ import hunt.net.codec.Decoder;
 import msgtrans.transport.tcp.TcpDecoder;
 import msgtrans.transport.tcp.TcpEncoder;
 
-class ProtobufCodec : Codec
+class TcpCodec : Codec
 {
-    private ProtobufEncoder _encoder = null;
-    private ProtobufDecoder _decoder = null;
+    private TcpEncoder _encoder = null;
+    private TcpDecoder _decoder = null;
 
     this() {
-        _encoder = new ProtobufEncoder();
-        _decoder = new ProtobufDecoder();
+        _encoder = new TcpEncoder();
+        _decoder = new TcpDecoder();
     }
 
     Encoder getEncoder()

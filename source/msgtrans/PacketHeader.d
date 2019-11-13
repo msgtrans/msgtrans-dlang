@@ -1,9 +1,12 @@
-module msgtrans.Packet;
+module msgtrans.PacketHeader;
 
-enum PACKET_HEADER_LENGTH = 32;
+enum int ID_FIELD_LENGTH = uint.sizeof;
+enum int LENGTH_FIELD_LENGTH = uint.sizeof;
+enum PACKET_HEADER_LENGTH = 16;
 
-import std.stdint;
 import std.bitmanip;
+import std.format;
+import std.stdint;
 
 // enum SERIALIZATION_TYPE : ushort {
 //     NONE,
@@ -29,10 +32,11 @@ import std.bitmanip;
 
 class PacketHeader
 {
+
     private
     {
         // Message ID
-        ulong _messageID = 0;
+        ulong _messageID = 0; 
 
         // Message data length
         ulong _messageLength = 0;
@@ -53,15 +57,22 @@ class PacketHeader
         _messageLength = length;
     }
 
-    static PacketHeader parse(ubyte[] bytes)
+    // 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 68 65 6C 6C 6F 
+    static PacketHeader parse(ubyte[] data)
     {
-        if (bytes.length < PACKET_HEADER_LENGTH)
-        {
-            return null;
-        }
+        // if (data.length < PACKET_HEADER_LENGTH)
+        // {
+        //     return null;
+        // }
+        // NOTE: Byte ordering is big endian.
 
-        ulong id = bigEndianToNative!ulong(bypes[0..7]);
-        ulong length = bigEndianToNative!ulong(bypes[8..15]);
+        ubyte[ID_FIELD_LENGTH] idBytes = data[0..ID_FIELD_LENGTH];
+        uint id = bigEndianToNative!(uint)(idBytes);
+        
+        enum LengthStart = ID_FIELD_LENGTH;
+        enum LengthEnd = ID_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
+        ubyte[LENGTH_FIELD_LENGTH] lengthBytes = data[LengthStart..LengthEnd];
+        uint length = bigEndianToNative!uint(lengthBytes);
 
         return new PacketHeader(id, length);
     }
@@ -71,10 +82,10 @@ class PacketHeader
         ubyte[8] h0 = nativeToBigEndian(_messageID);
         ubyte[8] h1 = nativeToBigEndian(_messageLength);
 
-        ubyte data = h0 ~ h1;
+        ubyte[] data = h0 ~ h1;
         if (data.length < PACKET_HEADER_LENGTH)
         {
-            ubyte[PACKET_HEADER_LENGTH - data.length] h3;
+            ubyte[] h3 = new ubyte[PACKET_HEADER_LENGTH - data.length];
             return data ~ h3;
         }
 
@@ -89,5 +100,9 @@ class PacketHeader
     long messageLength()
     {
         return _messageLength;
+    }
+
+    override string toString() {
+        return format("id: %d, lenth: %d", _messageID, _messageLength);
     }
 }

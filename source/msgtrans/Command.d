@@ -1,13 +1,12 @@
 module msgtrans.Command;
 
-import hunt.net;
+// import hunt.net;
 
-import msgtrans.transport.TransportSession;
+// import msgtrans.transport.TransportSession;
 
-import msgtrans.MessageBuffer;
-import msgtrans.Router;
+// import msgtrans.MessageBuffer;
 
-interface Command
-{
-     void execute(Session connection, MessageBuffer message);
-}
+// interface Command
+// {
+//      void execute(Session connection, MessageBuffer message);
+// }
