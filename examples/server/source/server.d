@@ -14,8 +14,8 @@ void main()
 {
     MessageTransportServer server = new MessageTransportServer();
 
-    server.addChannel(new TcpTransportServer(9001));
-    // server.addChannel(new TcpTransportServer(9003));
+    server.addChannel(new TcpServerChannel(9001));
+    // server.addChannel(new TcpServerChannel(9003));
     // server.addChannel(new WebsocketTransport(9002, "/test"));
 
     server.registerExecutor!MyExecutor();
@@ -24,13 +24,35 @@ void main()
 }
 
 
-class MyExecutor : MessageExecutor
+class MyExecutor : AbstractMessageExecutor!(MyExecutor)
 {
+    this() {
+
+    }
+
     @MessageId(MESSAGE.HELLO)
     void hello(TransportSession ctx, ubyte[] data)
     {
         string msg = cast(string) data;
 
+        string welcome = "Welcome " ~ msg;
+
+        warning(welcome);
+
+        // ctx.send(MESSAGE.WELCOME, welcome.dup);
+    }
+}
+
+
+class MyExecutor1 : AbstractMessageExecutor!(MyExecutor1) {
+
+    this() {
+
+    }
+    
+    @MessageId(MESSAGE.HELLO)
+    void sayHello(TransportSession ctx, string msg)
+    {
         string welcome = "Welcome " ~ msg;
 
         // ctx.send(MESSAGE.WELCOME, welcome.dup);

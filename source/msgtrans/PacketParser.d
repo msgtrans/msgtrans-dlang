@@ -25,9 +25,9 @@ class Packet
         return null;
     }
 
-    static ubyte[] encode(ulong messageId, ubyte[] data)
+    static ubyte[] encode(uint messageId, ubyte[] data)
     {
-        auto header = new PacketHeader(messageId, data.length);
+        auto header = new PacketHeader(messageId, cast(uint)data.length);
 
         return header.data() ~ data;
     }

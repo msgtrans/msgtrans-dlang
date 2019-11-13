@@ -2,7 +2,10 @@ module msgtrans.PacketHeader;
 
 enum int ID_FIELD_LENGTH = uint.sizeof;
 enum int LENGTH_FIELD_LENGTH = uint.sizeof;
-enum PACKET_HEADER_LENGTH = 16;
+enum int COMPRESSION_FIELD_LENGTH = byte.sizeof;
+// enum int RESERVED_FILED_LENGTH = -;
+enum int EXTENSION_FIELD_LENGTH = ushort.sizeof;
+enum int PACKET_HEADER_LENGTH = 16;
 
 import std.bitmanip;
 import std.format;
@@ -36,10 +39,10 @@ class PacketHeader
     private
     {
         // Message ID
-        ulong _messageID = 0; 
+        uint _messageID = 0; 
 
         // Message data length
-        ulong _messageLength = 0;
+        uint _messageLength = 0;
 
         // Serialization type including json, protobuf, msgpack, flatbuffers and more
         // ushort _serializationType = 0;
@@ -51,7 +54,7 @@ class PacketHeader
         // ushort _compactionType = 0;
     }
 
-    this(ulong id, ulong length)
+    this(uint id, uint length)
     {
         _messageID = id;
         _messageLength = length;
@@ -79,8 +82,8 @@ class PacketHeader
 
     ubyte[] data()
     {
-        ubyte[8] h0 = nativeToBigEndian(_messageID);
-        ubyte[8] h1 = nativeToBigEndian(_messageLength);
+        ubyte[ID_FIELD_LENGTH] h0 = nativeToBigEndian(_messageID);
+        ubyte[LENGTH_FIELD_LENGTH] h1 = nativeToBigEndian(_messageLength);
 
         ubyte[] data = h0 ~ h1;
         if (data.length < PACKET_HEADER_LENGTH)
@@ -92,7 +95,7 @@ class PacketHeader
         return data;
     }
 
-    long messageId()
+    uint messageId()
     {
         return _messageID;
     }

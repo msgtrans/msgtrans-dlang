@@ -1,7 +1,9 @@
-module msgtrans.transport.tcp.TcpTransportServer;
+module msgtrans.transport.tcp.TcpServerChannel;
 
 import msgtrans.transport.ServerChannel;
+import msgtrans.transport.TransportSession;
 import msgtrans.MessageBuffer;
+import msgtrans.MessageExecutor;
 
 
 // import msgtrans.ConnectionEventBaseHandler;
@@ -21,7 +23,7 @@ import std.uuid;
 /**
  * 
  */
-class TcpTransportServer : ServerChannel
+class TcpServerChannel : ServerChannel
 {
     // alias CloseCallBack = void delegate(Session connection);
 
@@ -113,6 +115,12 @@ class TcpTransportServer : ServerChannel
         
         string str = format("data received: %s", message.toString());
         tracef(str);
+        ExecutorInfo executorInfo = MessageExecutor.getExecutor(message.id);
+        if(executorInfo == ExecutorInfo.init) {
+            warning("No Executor found for id: ", message.id);
+        } else {
+            executorInfo.execute(cast(TransportSession)null, message.data);
+        }
         // Command handler =  Router.instance().getProcessHandler(message.messageId);
         // if (handler !is null)
         // {
