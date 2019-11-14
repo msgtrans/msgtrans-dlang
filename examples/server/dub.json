@@ -1,9 +1,12 @@
 {
-  "description": "A minimal D application.",
-  "license": "proprietary",
-  "name": "server",
-  "targetType": "executable",
-  "dependencies":{
-    "msgtrans" : {"path": "../../"}
-  }
+    "description": "A minimal D application.",
+    "license": "proprietary",
+    "name": "server",
+    "targetType": "executable",
+	"versions": ["HUNT_DEBUG", "HUNT_NET_DEBUG"],
+    "dependencies": {
+        "msgtrans": {
+            "path": "../../"
+        }
+    }
 }

@@ -1,6 +1,6 @@
 module message.Constants;
 
-enum MESSAGE : ulong {
+enum MESSAGE : uint {
     HELLO = 10001,
     WELCOME = 20001
 }
