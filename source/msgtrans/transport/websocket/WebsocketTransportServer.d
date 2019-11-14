@@ -1,6 +1,6 @@
 module msgtrans.transport.websocket.WebsocketTransportServer;
 
-// import msgtrans.transport.ServerChannel;
+import msgtrans.transport.ServerChannel;
 
 // import hunt.net.codec.Codec;
 
@@ -21,7 +21,7 @@ module msgtrans.transport.websocket.WebsocketTransportServer;
 // import msgtrans.transport.websocket.WebsocketEventHandler;
 // import msgtrans.transport.websocket.WebsocketCodec;
 
-// import hunt.logging;
+import hunt.logging.ConsoleLogger;
 
 // import msgtrans.transport.TransportSession;
 

@@ -2,7 +2,7 @@ module msgtrans.transport.tcp.TcpClientChannel;
 
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
-import msgtrans.MessageExecutor;
+import msgtrans.Executor;
 import msgtrans.transport.ClientChannel;
 import msgtrans.transport.tcp.TcpCodec;
 import msgtrans.transport.tcp.TcpTransportSession;
@@ -100,7 +100,7 @@ class TcpClientChannel : ClientChannel {
         // tx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
         // rx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
-        ExecutorInfo executorInfo = MessageExecutor.getExecutor(message.id);
+        ExecutorInfo executorInfo = Executor.getExecutor(message.id);
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", message.id);
         } else {
@@ -110,7 +110,7 @@ class TcpClientChannel : ClientChannel {
                 session = new TcpTransportSession(nextClientSessionId(), connection);
                 connection.setAttribute(ChannelSession, session);
             }
-            executorInfo.execute(session, message.data);
+            executorInfo.execute(session, message);
         }
     }
 

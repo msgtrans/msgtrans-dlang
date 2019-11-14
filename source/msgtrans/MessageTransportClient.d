@@ -30,13 +30,17 @@ class MessageTransportClient {
         // }
     }
 
-    void send(uint id, string msg ) {
+    void send(uint id, ubyte[] msg ) {
         // if(_channel.isConnected()) {
 
         // } else {
         //     warning("Connection broken!");
         // }
-        _channel.send(new MessageBuffer(id, cast(ubyte[])msg));
+        _channel.send(new MessageBuffer(id, msg));
+    }
+
+    void send(uint id, string msg ) {
+        this.send(id, cast(ubyte[]) msg);
     }
 
     void block() {

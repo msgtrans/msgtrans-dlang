@@ -35,7 +35,7 @@ class TcpTransportSession : TransportSession {
     }
 
 
-    override void sendMsg(MessageBuffer message) {
+    override void send(MessageBuffer message) {
         if (_conn.isConnected()) {
             ubyte[][] buffers = Packet.encode(message);
             foreach(ubyte[] data; buffers) {

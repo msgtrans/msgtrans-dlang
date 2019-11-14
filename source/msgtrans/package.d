@@ -1,7 +1,7 @@
 module msgtrans;
 
-public import msgtrans.MessageContext;
-public import msgtrans.MessageExecutor;
+public import msgtrans.MessageBuffer;
+public import msgtrans.Executor;
 public import msgtrans.transport.TransportSession;
 
 // Server

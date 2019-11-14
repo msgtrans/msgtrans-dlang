@@ -1,4 +1,4 @@
-module msgtrans.MessageTransportFectory;
+module msgtrans.MessageTransportFactory;
 
 // import hunt.net;
 

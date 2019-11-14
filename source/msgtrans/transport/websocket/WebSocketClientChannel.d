@@ -1,4 +1,4 @@
-module msgtrans.transport.websocket.WebsocketTransportClient;
+module msgtrans.transport.websocket.WebSocketClientChannel;
 
 // import hunt.http.client.ClientHttpHandler;
 // import hunt.http.client.HttpClient;

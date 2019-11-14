@@ -43,12 +43,12 @@ abstract class TransportSession {
     
     bool containsAttribute(string key);
 
+    void send(MessageBuffer buffer);
 
     void send(uint messageId, string content) {
-        sendMsg(new MessageBuffer(messageId, cast(ubyte[])content));
+        send(new MessageBuffer(messageId, cast(ubyte[])content));
     }
 
-    void sendMsg(MessageBuffer message);
 
     // abstract Connection getConnection() {
     //     return _connection;

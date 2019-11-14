@@ -1,5 +1,6 @@
-module msgtrans.MessageExecutor;
+module msgtrans.Executor;
 
+import msgtrans.MessageBuffer;
 import msgtrans.transport.TransportSession;
 
 import hunt.logging.ConsoleLogger;
@@ -8,6 +9,11 @@ import witchcraft;
 import std.conv;
 import std.range;
 import std.variant;
+
+
+struct MessageId {
+    uint value;
+}
 
 /** 
  * 
@@ -30,7 +36,7 @@ struct ExecutorInfo {
         return _id;
     }
 
-    void execute(Args...)(TransportSession session, ubyte[] data, Args args) nothrow {
+    void execute(Args...)(TransportSession session, MessageBuffer buffer, Args args) nothrow {
         try {
             string objectKey = id();
             Object obj = session.getAttribute(objectKey);
@@ -45,7 +51,7 @@ struct ExecutorInfo {
             //         this.hello(ctx, msg);
             // }
             // string msg = cast(string)codec.decode(ubyte[]);
-            _method.invoke(obj, session, data);
+            _method.invoke(obj, session, buffer);
         } catch(Throwable ex) {
             warning(ex.msg);
         }
@@ -53,7 +59,7 @@ struct ExecutorInfo {
 }
 
 
-interface MessageExecutor {
+interface Executor {
     // __gshared const(ExecutorInfo)[int] executors;
     __gshared ExecutorInfo[int] executors;
 
@@ -66,7 +72,7 @@ interface MessageExecutor {
 }
 
 
-class AbstractMessageExecutor(T) : MessageExecutor {
+class AbstractExecutor(T) : Executor {
 
     shared static this() {
         tracef("Registering %s", T.stringof);
@@ -84,9 +90,9 @@ class AbstractMessageExecutor(T) : MessageExecutor {
                     Variant value = attr.get();
                     // trace(value.type.toString());
                     MessageId messageId = value.get!(MessageId)();
-                    // trace(messageId.code);
+                    // trace(messageId.value);
 
-                    int messageCode = messageId.code;
+                    int messageCode = messageId.value;
                     if(messageCode in executors) {
                         warningf("message code collision: %d in %s", messageCode, c.getFullName());
                     } else {
@@ -103,12 +109,4 @@ class AbstractMessageExecutor(T) : MessageExecutor {
     }
 
     mixin Witchcraft!T;
-}
-
-class ExecutorContext {
-    
-}
-
-struct MessageId {
-    int code;
 }

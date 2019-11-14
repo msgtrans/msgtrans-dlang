@@ -13,16 +13,7 @@ interface ServerChannel
     string name();
 
     // ushort port();
-
     // string host();
-
-    // ConnectionEventHandler getHandler();
-
-    // Codec getCodec();
-
-    // NetServerOptions getOptions();
-
-    // void registerHandler();
 
     void start();
 }

@@ -9,6 +9,7 @@ import message.WelcomeMessage;
 import core.thread;
 import core.time : seconds;
 
+import hunt.util.Serialize;
 
 void main()
 {
@@ -22,24 +23,26 @@ void main()
 }
 
 
-class MyExecutor : AbstractMessageExecutor!(MyExecutor)
+class MyExecutor : AbstractExecutor!(MyExecutor)
 {
     this() {
     }
 
     @MessageId(MESSAGE.HELLO)
-    void hello(TransportSession ctx, ubyte[] data)
+    void hello(TransportSession ctx, MessageBuffer buffer)
     {
-        string msg = cast(string) data;
-        string welcome = "Hello " ~ msg;
-        warningf("session %d, message: %s", ctx.id(), welcome);
+        HelloMessage message = unserialize!HelloMessage(cast(const byte[])buffer.data);
+        WelcomeMessage welcomeMessage = new WelcomeMessage;
+        welcomeMessage.welcome = "Hello " ~ message.name;
 
-        ctx.send(MESSAGE.WELCOME, welcome);
+        warningf("session %d, message: %s", ctx.id(), welcomeMessage.welcome);
+
+        ctx.send(new MessageBuffer(MESSAGE.WELCOME, cast(ubyte[])serialize(welcomeMessage)));
     }
 }
 
 
-// class MyExecutor1 : AbstractMessageExecutor!(MyExecutor1) {
+// class MyExecutor1 : AbstractExecutor!(MyExecutor1) {
 
 //     this() {
 
