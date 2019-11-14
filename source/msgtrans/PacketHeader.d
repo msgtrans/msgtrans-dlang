@@ -72,9 +72,7 @@ class PacketHeader
         _messageID = id;
         _messageLength = length;
     }
-
-    // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 68 65 6C 6C 6F 
-    // tx: 
+ 
     static PacketHeader parse(ubyte[] data)
     {
         // if (data.length < PACKET_HEADER_LENGTH)
@@ -107,7 +105,6 @@ class PacketHeader
         buffer[lengthStart .. lengthEnd] = h1[];
 
         return buffer;
-
     }
 
     ubyte[] data()

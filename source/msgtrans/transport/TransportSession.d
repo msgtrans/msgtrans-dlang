@@ -1,8 +1,6 @@
 module msgtrans.transport.TransportSession;
 
 import msgtrans.MessageBuffer;
-import msgtrans.Router;
-import msgtrans.ParserBase;
 import msgtrans.Command;
 
 import hunt.util.Serialize;

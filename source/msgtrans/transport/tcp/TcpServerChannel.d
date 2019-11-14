@@ -87,7 +87,6 @@ class TcpServerChannel : ServerChannel
                 } else {
                     dispatchMessage(connection, buffer);
                 }
-                // connection.write(str);
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {

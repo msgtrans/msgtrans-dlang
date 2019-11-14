@@ -3,7 +3,6 @@ module msgtrans.transport.tcp.TcpEncoder;
 import hunt.net.codec.Encoder;
 import hunt.net.Connection;
 
-import msgtrans.ParserBase;
 import msgtrans.MessageBuffer;
 
 import hunt.collection.ByteBuffer;

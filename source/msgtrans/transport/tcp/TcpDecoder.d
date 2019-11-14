@@ -133,23 +133,3 @@ class TcpDecoder : DecoderChain {
 
 }
 
-// class ProtobufDecoder : ParserBase , Decoder {
-
-//     override void decode(ByteBuffer buf, Connection connection)
-//     {
-//        EvBuffer!ubyte revbuferr = getContext(connection);
-//        parserTcpStream(revbuferr, cast(ubyte[])buf.getRemaining(), connection);
-//     }
-
-
-//     private EvBuffer!ubyte getContext(Connection connection) {
-//         EvBuffer!ubyte revbuferr = null;
-//         revbuferr = cast(EvBuffer!ubyte) connection.getAttribute(PARSER);
-
-//         if (revbuferr is null) {
-//             revbuferr = new EvBuffer!ubyte ;
-//             connection.setAttribute(PARSER, revbuferr);
-//         }
-//         return revbuferr;
-//     }
-// }
