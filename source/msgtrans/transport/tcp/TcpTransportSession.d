@@ -1,11 +1,11 @@
 module msgtrans.transport.tcp.TcpTransportSession;
 
+import msgtrans.Packet;
+import msgtrans.MessageBuffer;
+import msgtrans.transport.TransportSession;
+
 import hunt.net;
 import hunt.String;
-
-import msgtrans.MessageBuffer;
-
-import msgtrans.transport.TransportSession;
 
 import std.stdio;
 import std.array;
@@ -37,13 +37,12 @@ class TcpTransportSession : TransportSession {
 
     override void sendMsg(MessageBuffer message) {
         if (_conn.isConnected()) {
-            _conn.write(message);
+            ubyte[][] buffers = Packet.encode(message);
+            foreach(ubyte[] data; buffers) {
+                _conn.write(data);
+            }
         }
     }
-
-    // override Connection getConnection() {
-    //     return _conn;
-    // }
 
     override void close() {
         if (_conn !is null && _conn.getState() !is ConnectionState.Closed) {

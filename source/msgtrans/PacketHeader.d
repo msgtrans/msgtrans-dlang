@@ -93,6 +93,22 @@ class PacketHeader
         return new PacketHeader(id, length);
     }
 
+    static ubyte[] encode(uint id, uint length) {
+        ubyte[ID_FIELD_LENGTH] h0 = nativeToBigEndian(id);
+        ubyte[LENGTH_FIELD_LENGTH] h1 = nativeToBigEndian(length);
+
+        ubyte[] buffer = new ubyte[PACKET_HEADER_LENGTH];
+        buffer[0..ID_FIELD_LENGTH] = h0[];
+
+        int lengthStart = ID_FIELD_LENGTH;
+        int lengthEnd = lengthStart + LENGTH_FIELD_LENGTH;
+
+        buffer[lengthStart .. lengthEnd] = h1[];
+
+        return buffer;
+
+    }
+
     ubyte[] data()
     {
         ubyte[ID_FIELD_LENGTH] h0 = nativeToBigEndian(_messageID);

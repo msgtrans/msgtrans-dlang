@@ -39,7 +39,7 @@ class MyExecutor : AbstractMessageExecutor!(MyExecutor)
 
         warningf("session %d, message: %s", ctx.id(), welcome);
 
-        // ctx.send(MESSAGE.WELCOME, welcome.dup);
+        ctx.send(MESSAGE.WELCOME, welcome);
     }
 }
 
