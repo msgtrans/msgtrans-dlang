@@ -2,6 +2,9 @@ module msgtrans.MessageBuffer;
 
 import std.format;
 
+/** 
+ * 
+ */
 class MessageBuffer
 {
     uint id;

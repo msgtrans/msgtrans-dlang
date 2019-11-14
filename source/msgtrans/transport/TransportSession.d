@@ -39,6 +39,17 @@ abstract class TransportSession {
         return _id;
     }
 
+    Object getAttribute(string key);
+
+    void setAttribute(string key, Object value);
+    
+    bool containsAttribute(string key);
+
+
+    void send(uint messageId, string content) {
+        sendMsg(new MessageBuffer(messageId, cast(ubyte[])content));
+    }
+
     void sendMsg(MessageBuffer message);
 
     // abstract Connection getConnection() {

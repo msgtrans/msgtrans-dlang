@@ -107,10 +107,12 @@ class TcpServerChannel : ServerChannel
         });      
     }
 
-    static void dispatchMessage(Connection connection , MessageBuffer message ) {
+    private static void dispatchMessage(Connection connection , MessageBuffer message ) {
+        version(HUNT_DEBUG) {
+            string str = format("data received: %s", message.toString());
+            tracef(str);
+        }
         
-        string str = format("data received: %s", message.toString());
-        tracef(str);
         ExecutorInfo executorInfo = MessageExecutor.getExecutor(message.id);
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", message.id);
@@ -123,12 +125,5 @@ class TcpServerChannel : ServerChannel
             }
             executorInfo.execute(session, message.data);
         }
-        // Command handler =  Router.instance().getProcessHandler(message.messageId);
-        // if (handler !is null)
-        // {
-        //     handler.execute(connection,message);
-        // } else {
-        //     logError("Unknown msgType %d",message.messageId );
-        // }
     }
 }

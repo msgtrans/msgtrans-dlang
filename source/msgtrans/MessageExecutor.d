@@ -1,18 +1,43 @@
 module msgtrans.MessageExecutor;
 
+import msgtrans.transport.TransportSession;
+
 import hunt.logging.ConsoleLogger;
 import witchcraft;
 
+import std.conv;
+import std.range;
 import std.variant;
 
+/** 
+ * 
+ */
 struct ExecutorInfo {
-    int messageCode;
-    Class classMeta;
-    Method method;
+    private string _id = "";
+    private int _messageCode;
+    private Class _classMeta;
+    private Method _method;
 
-    void execute(Args...)(Args args) nothrow {
+    this(int messageCode, Class classMeta, Method method) {
+        this._messageCode = messageCode;
+        this._classMeta = classMeta;
+        this._method = method;
+    }
+
+    string id() {
+        if(_id.empty())
+            _id = _messageCode.to!string();
+        return _id;
+    }
+
+    void execute(Args...)(TransportSession session, ubyte[] data, Args args) nothrow {
         try {
-            Object obj = classMeta.create();
+            string objectKey = id();
+            Object obj = session.getAttribute(objectKey);
+            if(obj is null) {
+                obj = _classMeta.create();
+                session.setAttribute(objectKey, obj);
+            }
             // switch(id)
             // {
             //     case 10001:
@@ -20,7 +45,7 @@ struct ExecutorInfo {
             //         this.hello(ctx, msg);
             // }
             // string msg = cast(string)codec.decode(ubyte[]);
-            method.invoke(obj, args);
+            _method.invoke(obj, session, data);
         } catch(Throwable ex) {
             warning(ex.msg);
         }

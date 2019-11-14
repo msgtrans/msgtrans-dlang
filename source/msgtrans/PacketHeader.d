@@ -1,5 +1,14 @@
 module msgtrans.PacketHeader;
 
+
+import std.bitmanip;
+import std.format;
+import std.stdint;
+
+/* -------------------------------------------------------------------------- */
+/*                                  protocol                                  */
+/* -------------------------------------------------------------------------- */
+
 enum int ID_FIELD_LENGTH = uint.sizeof;
 enum int LENGTH_FIELD_LENGTH = uint.sizeof;
 enum int COMPRESSION_FIELD_LENGTH = byte.sizeof;
@@ -7,9 +16,8 @@ enum int COMPRESSION_FIELD_LENGTH = byte.sizeof;
 enum int EXTENSION_FIELD_LENGTH = ushort.sizeof;
 enum int PACKET_HEADER_LENGTH = 16;
 
-import std.bitmanip;
-import std.format;
-import std.stdint;
+
+/* -------------------------------------------------------------------------- */
 
 // enum SERIALIZATION_TYPE : ushort {
 //     NONE,
@@ -33,6 +41,9 @@ import std.stdint;
 //     LZMA
 // }
 
+/** 
+ * 
+ */
 class PacketHeader
 {
 
@@ -43,6 +54,8 @@ class PacketHeader
 
         // Message data length
         uint _messageLength = 0;
+
+        int compressionType;
 
         // Serialization type including json, protobuf, msgpack, flatbuffers and more
         // ushort _serializationType = 0;

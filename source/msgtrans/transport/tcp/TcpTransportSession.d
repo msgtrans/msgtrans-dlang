@@ -21,9 +21,19 @@ class TcpTransportSession : TransportSession {
         super(id);
     }
 
-    // void onConnectionClosed() {
-    //     _conn = null;
-    // }
+
+    override Object getAttribute(string key) {
+        return _conn.getAttribute(key);
+    }
+
+    override void setAttribute(string key, Object value) {
+        _conn.setAttribute(key, value);
+    }
+
+    override bool containsAttribute(string key) {
+        return _conn.containsAttribute(key);
+    }
+
 
     override void sendMsg(MessageBuffer message) {
         if (_conn.isConnected()) {
