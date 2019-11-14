@@ -8,16 +8,6 @@ import msgtrans.PacketHeader;
  */
 class Packet
 {
-    // static PacketHeader parseHeader(ubyte[] data)
-    // {
-    //     if (data.length > PACKET_HEADER_LENGTH)
-    //     {
-    //         return PacketHeader.parse(data);
-    //     }
-        
-    //     return null;
-    // }
-
     // static ubyte[] encode(uint messageId, ubyte[] data)
     // {
     //     auto header = new PacketHeader(messageId, cast(uint)data.length);

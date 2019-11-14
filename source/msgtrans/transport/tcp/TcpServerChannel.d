@@ -23,8 +23,6 @@ import std.uuid;
  */
 class TcpServerChannel : ServerChannel
 {
-    // alias CloseCallBack = void delegate(Session connection);
-
     private NetServer _server;
     private string _name = typeof(this).stringof;
 
@@ -49,7 +47,6 @@ class TcpServerChannel : ServerChannel
     {
         _host = host;
         _port = port;
-        // _handler = new TcpConnectionEventHandler(_name);
         // _codec = new TcpCodec();
         _options = options;
         // _name = randomUUID().toString();
@@ -86,7 +83,7 @@ class TcpServerChannel : ServerChannel
             override void messageReceived(Connection connection, Object message) {
                 MessageBuffer buffer = cast(MessageBuffer) message;
                 if(buffer is null) {
-                    warningf("expected tyep: MessageBuffer, message type: %s", typeid(message).name);
+                    warningf("expected type: MessageBuffer, message type: %s", typeid(message).name);
                 } else {
                     dispatchMessage(connection, buffer);
                 }
@@ -94,24 +91,27 @@ class TcpServerChannel : ServerChannel
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {
-                warning(t);
+                debug warning(t.msg);
             }
 
             override void failedOpeningConnection(int connectionId, Throwable t) {
-                warning(t);
+                debug warning(t.msg);
             }
 
             override void failedAcceptingConnection(int connectionId, Throwable t) {
-                warning(t);
+                debug warning(t.msg);
             }
         });      
     }
 
-    private static void dispatchMessage(Connection connection , MessageBuffer message ) {
+    private static void dispatchMessage(Connection connection, MessageBuffer message ) {
         version(HUNT_DEBUG) {
             string str = format("data received: %s", message.toString());
             tracef(str);
         }
+
+        // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
+        // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
         ExecutorInfo executorInfo = MessageExecutor.getExecutor(message.id);
         if(executorInfo == ExecutorInfo.init) {

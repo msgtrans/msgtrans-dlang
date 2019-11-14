@@ -22,9 +22,9 @@ class MessageTransportServer {
         _tranportServers[name] = server;
     }
 
-    void registerExecutor(T)() if(is(T : MessageExecutor)) {
+    // void registerExecutor(T)() if(is(T : MessageExecutor)) {
 
-    }
+    // }
 
 
     void start()
