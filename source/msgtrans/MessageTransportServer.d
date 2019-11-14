@@ -5,17 +5,9 @@ import msgtrans.transport.ServerChannel;
 import msgtrans.MessageExecutor;
 import hunt.logging.ConsoleLogger;
 
-// import hunt.net;
-// import hunt.imf.protocol.Protocol;
-// import hunt.imf.ConnectionEventBaseHandler;
-// import hunt.imf.ConnectionManager;
-// import std.typecons;
-
-class MessageExecutorInfo {
-    TypeInfo_Class type;
-    string methodName;
-}
-
+/** 
+ * 
+ */
 class MessageTransportServer {
 
     ServerChannel[string] _tranportServers;

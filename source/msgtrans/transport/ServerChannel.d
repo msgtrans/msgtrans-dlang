@@ -5,6 +5,9 @@ module msgtrans.transport.ServerChannel;
 // import hunt.net.NetServerOptions;
 import hunt.net;
 
+/** 
+ * 
+ */
 interface ServerChannel
 {
     string name();

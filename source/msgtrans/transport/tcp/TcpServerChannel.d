@@ -9,9 +9,7 @@ import msgtrans.MessageExecutor;
 // import msgtrans.ConnectionEventBaseHandler;
 // import msgtrans.protocol.protobuf.TcpConnectionEventHandler;
 import msgtrans.transport.tcp.TcpCodec;
-// import msgtrans.GatewayApplication;
-// import msgtrans.ConnectionManager;
-// import msgtrans.Session;
+import msgtrans.transport.tcp.TcpTransportSession;
 
 import hunt.logging.ConsoleLogger;
 import hunt.net;
@@ -35,9 +33,7 @@ class TcpServerChannel : ServerChannel
         string _host;
         ushort _port;
 
-        // ConnectionEventBaseHandler _handler;
         NetServerOptions _options = null;
-        // Codec _codec;
     }
 
     this(ushort port) {
@@ -119,7 +115,13 @@ class TcpServerChannel : ServerChannel
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", message.id);
         } else {
-            executorInfo.execute(cast(TransportSession)null, message.data);
+            enum string ChannelSession = "ChannelSession";
+            TcpTransportSession session = cast(TcpTransportSession)connection.getAttribute(ChannelSession);
+            if(session is null ){
+                session = new TcpTransportSession(nextServerSessionId(), connection);
+                connection.setAttribute(ChannelSession, session);
+            }
+            executorInfo.execute(session, message.data);
         }
         // Command handler =  Router.instance().getProcessHandler(message.messageId);
         // if (handler !is null)

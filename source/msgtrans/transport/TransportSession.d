@@ -9,26 +9,43 @@ import hunt.util.Serialize;
 import hunt.net;
 import hunt.logging;
 
-
+import core.atomic;
 import std.stdint;
 import std.bitmanip;
 
+private shared long _serverSessionId = 0;
+private shared long _clientSessionId = 0;
+
+long nextServerSessionId() {
+    return atomicOp!("+=")(_serverSessionId, 1);
+}
+
+long nextClientSessionId() {
+    return atomicOp!("+=")(_clientSessionId, 1);
+}
+
+/** 
+ * 
+ */
 abstract class TransportSession {
 
-    private
-    {
-        long _id;
+    private long _id;
+
+    this(long id) {
+        _id = id;
     }
-    
-    abstract long id() { return 0; }
 
-    abstract void sendMsg(MessageBuffer message) {}
+    long id() {
+        return _id;
+    }
 
-    // abstract string getProtocol() { return null;}
+    void sendMsg(MessageBuffer message);
 
-    abstract Connection getConnection() {return null;}
+    // abstract Connection getConnection() {
+    //     return _connection;
+    // }
 
-    abstract void close() {}
+    void close();
 
-    abstract bool isConnected() {return false;}
+    bool isConnected();
 }

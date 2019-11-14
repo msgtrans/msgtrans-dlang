@@ -37,7 +37,7 @@ class MyExecutor : AbstractMessageExecutor!(MyExecutor)
 
         string welcome = "Welcome " ~ msg;
 
-        warning(welcome);
+        warningf("session %d, message: %s", ctx.id(), welcome);
 
         // ctx.send(MESSAGE.WELCOME, welcome.dup);
     }
