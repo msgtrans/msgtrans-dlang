@@ -1,37 +1,49 @@
 import std.stdio;
 
-import msgtrans.protocol.Protocol;
-import msgtrans.transport.tcp.TcpProtocol;
-import common.Commands;
-import common.helloworld;
-import google.protobuf;
-import std.array;
-import msgtrans.clients.GatewayClient;
-import msgtrans.clients.GatewayWebSocketClient;
-import msgtrans.protocol.websocket.WsProtocol;
-import msgtrans.clients.GatewayHttpClient;
-import msgtrans.protocol.http.HttpProtocol;
-import msgtrans.clients.GatewayTcpClient;
-import msgtrans.ParserBase;
-import core.thread;
+import msgtrans;
+
+import message.Constants;
+import message.HelloMessage;
+import message.WelcomeMessage;
+
 import hunt.logging;
+
+import std.stdio : writeln;
+
 void main()
 {
-	auto req = new HelloRequest ();
-	req.name = "1234567890abcdefjhijklmnopqrstuvwxyz";
+    MessageTransportClient client = new MessageTransportClient();
+    client.transport(new TcpClientChannel("127.0.0.1", 9001));
+    // client.transport(new TcpClientChannel("10.1.222.120", 9001));
 
-    WsProtocol ws = new WsProtocol("127.0.0.1",18181);
-	GatewayWebSocketClient wsclient = new GatewayWebSocketClient(ws);
-	wsclient.connect();
+    // client.transport(new WebsocketTransport("ws://msgtrans.huntlabs.net:9002/test"));
 
-	wsclient.sendMsg(Commands.SayHelloReq,req);
+    // client.addExecutor(new MyExecutor);
 
-//-------------------------------------------------------------------
+    // client.codec(new CustomCodec).keepAlive().connect();
 
-	ProtobufProtocol tcp = new ProtobufProtocol("127.0.0.1",12001);
-	GatewayTcpClient tcpclient = new GatewayTcpClient(tcp);
-	tcpclient.connect();
-	tcpclient.sendMsg(Commands.SayHelloReq,req);
+    // auto message = new HelloMessage;
+    // message.name = "zoujiaqing";
 
-	getchar();
+    client.send(MESSAGE.HELLO, "World");
+
+    client.block();
+}
+
+
+class MyExecutor : AbstractMessageExecutor!(MyExecutor)
+{
+    this() {
+
+    }
+
+    @MessageId(MESSAGE.WELCOME)
+    void welcome(TransportSession ctx, ubyte[] data)
+    {
+        string msg = cast(string) data;
+        warningf("session %d, message: %s", ctx.id(), msg);
+
+        // string welcome = "Welcome " ~ msg;
+        // writeln(message.welcome);
+    }
 }
