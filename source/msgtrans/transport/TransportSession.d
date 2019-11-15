@@ -1,7 +1,7 @@
 module msgtrans.transport.TransportSession;
 
 import msgtrans.MessageBuffer;
-import msgtrans.Command;
+import msgtrans.SessionManager;
 
 import hunt.util.Serialize;
 import hunt.net;
@@ -11,14 +11,14 @@ import core.atomic;
 import std.stdint;
 import std.bitmanip;
 
-private shared long _serverSessionId = 0;
-private shared long _clientSessionId = 0;
+private shared ulong _serverSessionId = 0;
+private shared ulong _clientSessionId = 0;
 
-long nextServerSessionId() {
+ulong nextServerSessionId() {
     return atomicOp!("+=")(_serverSessionId, 1);
 }
 
-long nextClientSessionId() {
+ulong nextClientSessionId() {
     return atomicOp!("+=")(_clientSessionId, 1);
 }
 
@@ -27,15 +27,30 @@ long nextClientSessionId() {
  */
 abstract class TransportSession {
 
-    private long _id;
-
+    private
+    {
+        long _id;
+        // SessionManager _sessionManager;
+    }
+    
+    // this(SessionManager sessionManager) {
+    //     _id = sessionManager.genarateId();
+    //     _sessionManager = sessionManager;
+    // }
     this(long id) {
         _id = id;
+        // _id = sessionManager.genarateId();
+        // _sessionManager = sessionManager;
     }
 
     long id() {
         return _id;
     }
+
+    // SessionManager sessionManager()
+    // {
+    //     return _sessionManager;
+    // }
 
     Object getAttribute(string key);
 

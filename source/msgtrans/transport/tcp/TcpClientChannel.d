@@ -23,12 +23,13 @@ import std.format;
  * 
  */
 class TcpClientChannel : ClientChannel {
+    private string _host;
+    private ushort _port;
 
     private NetClient _client;
     private NetClientOptions _options;
     private Connection _connection;
-    private string _host;
-    private ushort _port;
+
 	private Mutex _connectLocker;
 	private Condition _connectCondition;
 
@@ -114,8 +115,7 @@ class TcpClientChannel : ClientChannel {
         }
     }
 
-    void connect()
-    {
+    void connect() {
         _connectLocker.lock();
         scope(exit) {
             _connectLocker.unlock();

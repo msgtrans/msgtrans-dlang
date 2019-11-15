@@ -3,19 +3,11 @@ module msgtrans.transport.tcp.TcpDecoder;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 
-// import msgtrans.ParserBase;
-// import hunt.net.codec.Decoder;
-// import hunt.net.Connection;
-// import hunt.net.Exceptions;
-
 import hunt.collection.ByteBuffer;
 import hunt.collection.BufferUtils;
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
-
-// import hunt.String;
-// import msgtrans.EvBuffer;
 
 import std.algorithm;
 import std.conv;

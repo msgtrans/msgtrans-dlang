@@ -1,30 +1,119 @@
 module msgtrans.transport.websocket.WebSocketClientChannel;
 
-// import hunt.http.client.ClientHttpHandler;
-// import hunt.http.client.HttpClient;
-// import hunt.http.client.HttpClientConnection;
-// import hunt.http.client.HttpClientRequest;
-// import hunt.http.HttpOptions;
-// import hunt.http.HttpConnection;
-// import hunt.http.codec.http.stream.HttpOutputStream;
-// import hunt.http.codec.websocket.frame;
-// import hunt.http.codec.websocket.model.IncomingFrames;
-// import hunt.http.codec.websocket.stream.WebSocketConnection;
-// import hunt.http.codec.websocket.stream.WebSocketPolicy;
-// import hunt.concurrency.Promise;
-// import hunt.concurrency.Future;
-// import hunt.concurrency.FuturePromise;
-// import hunt.concurrency.CompletableFuture;
-// import hunt.http.client.HttpClientOptions;
-// import msgtrans.transport.websocket.GatewayClient;
-// import msgtrans.protocol.Protocol;
-// import google.protobuf;
-// import std.array;
-// import msgtrans.Session;
-// import msgtrans.protocol.websocket.WebsocketTransportSession;
-// import hunt.net;
-// import hunt.logging;
-// import msgtrans.MessageBuffer;
+import msgtrans.Packet;
+import msgtrans.MessageBuffer;
+import msgtrans.Executor;
+import msgtrans.transport.ClientChannel;
+import msgtrans.transport.TransportSession;
+import msgtrans.transport.websocket.WebSocketChannel;
+
+import hunt.collection.ByteBuffer;
+import hunt.Exceptions;
+import hunt.http.client;
+import hunt.logging.ConsoleLogger;
+import hunt.net;
+
+import hunt.concurrency.FuturePromise;
+
+import core.sync.condition;
+import core.sync.mutex;
+
+import std.format;
+import std.range;
+
+/** 
+ * 
+ */
+class WebSocketClientChannel : WebSocketChannel, ClientChannel {
+    private HttpURI _url;
+    
+    private HttpClient _client;
+    private WebSocketConnection _connection;
+    
+
+    this(string host, ushort port, string path) {
+        if(path.empty() || path[0] != '/')
+            throw new Exception("Wrong path: " ~ path);
+        string url = format("ws://%s:%d%s", host, port, path);
+        this(new HttpURI(url));
+    }
+
+    this(string url) {
+        this(new HttpURI(url));
+    }
+
+    this(HttpURI url) {
+        _url = url;
+        _client = new HttpClient();
+    }
+
+    void connect() {
+
+        if(_connection !is null) {
+            return;
+        }
+        
+        Request request = new RequestBuilder()
+            .url(_url)
+            // .authorization(AuthenticationScheme.Basic, "cHV0YW86MjAxOQ==")
+            .build();
+        
+        
+        _connection = _client.newWebSocket(request, new class AbstractWebSocketMessageHandler {
+            override void onOpen(WebSocketConnection connection) {
+                version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());
+            }
+
+            override void onText(WebSocketConnection connection, string text) {
+                version(HUNT_DEBUG) tracef("received (from %s): %s", connection.getRemoteAddress(), text); 
+            }
+            
+            override void onBinary(WebSocketConnection connection, ByteBuffer buffer)  { 
+                byte[] data = buffer.getRemaining();
+                version(HUNT_DEBUG) {
+                    tracef("received (from %s): %s", connection.getRemoteAddress(), buffer.toString()); 
+                    if(data.length<=64)
+                        infof("%(%02X %)", data[0 .. $]);
+                    else
+                        infof("%(%02X %) ...(%d bytes)", data[0 .. 64], data.length);
+                }
+                
+                if(data.length > 0) {
+                    decode(connection, buffer);
+                }
+            }
+        });
+
+    }
+
+    bool isConnected() {
+        return _connection !is null && _connection.getTcpConnection().isConnected();
+    }
+
+    override ulong nextSessionId() {
+        return nextClientSessionId();
+    }
+
+    void send(MessageBuffer message) {
+        if(!isConnected()) {
+            throw new IOException("Connection broken!");
+        }
+
+        ubyte[][] buffers = Packet.encode(message);
+        foreach(ubyte[] data; buffers) {
+            _connection.sendData(cast(byte[])data);
+        }
+    }
+
+    void close() {
+        if(_client !is null) {
+            _client.close();
+        }
+    }
+
+
+}
+
 
 // class ClientHttpHandlerEx : AbstractClientHttpHandler {
 //     import hunt.http.codec.http.model;

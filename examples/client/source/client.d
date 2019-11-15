@@ -13,8 +13,10 @@ import std.stdio : writeln;
 void main()
 {
     MessageTransportClient client = new MessageTransportClient();
-    client.transport(new TcpClientChannel("127.0.0.1", 9001));
+    // client.transport(new TcpClientChannel("127.0.0.1", 9001));
     // client.transport(new TcpClientChannel("10.1.222.120", 9001));
+
+    client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
 
     // client.transport(new WebsocketTransport("ws://msgtrans.huntlabs.net:9002/test"));
 
@@ -24,23 +26,26 @@ void main()
 
     // auto message = new HelloMessage;
     // message.name = "zoujiaqing";
-
+    warning("sending message");
     client.send(MESSAGE.HELLO, "World");
+    warning("waiting for response");
 
-    client.block();
+    getchar();
+    client.close();
 }
 
 
-class MyExecutor : AbstractMessageExecutor!(MyExecutor)
+class MyExecutor : AbstractExecutor!(MyExecutor)
 {
     this() {
 
     }
 
     @MessageId(MESSAGE.WELCOME)
-    void welcome(TransportSession ctx, ubyte[] data)
+    void welcome(TransportSession ctx, MessageBuffer buffer)
     {
-        string msg = cast(string) data;
+        long msgId = buffer.id;
+        string msg = cast(string) buffer.data;
         warningf("session %d, message: %s", ctx.id(), msg);
 
         // string welcome = "Welcome " ~ msg;

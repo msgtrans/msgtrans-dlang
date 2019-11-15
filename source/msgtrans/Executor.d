@@ -36,6 +36,13 @@ struct ExecutorInfo {
         return _id;
     }
 
+    /** 
+     * 
+     * Params:
+     *   session = 
+     *   buffer = 
+     *   args = 
+     */
     void execute(Args...)(TransportSession session, MessageBuffer buffer, Args args) nothrow {
         try {
             string objectKey = id();
@@ -54,11 +61,14 @@ struct ExecutorInfo {
             _method.invoke(obj, session, buffer);
         } catch(Throwable ex) {
             warning(ex.msg);
+            version(HUNT_DEBUG) warning(ex);
         }
     }
 }
 
-
+/** 
+ * 
+ */
 interface Executor {
     // __gshared const(ExecutorInfo)[int] executors;
     __gshared ExecutorInfo[int] executors;
@@ -72,9 +82,18 @@ interface Executor {
 }
 
 
-class AbstractExecutor(T) : Executor {
+/** 
+ * 
+ */
+class AbstractExecutor(T) : Executor if (is(T == class)) { 
+    // && __traits(compiles, new T())
+    // && is(typeof(new T()))
+
+    // TODO: Tasks pending completion -@zhangxueping at 2019-11-14T18:50:12+08:00
+    // To check the default constructor.
 
     shared static this() {
+
         tracef("Registering %s", T.stringof);
         Class c = T.metaof;
         const(Method)[] methods =  c.getMethods();
@@ -107,6 +126,7 @@ class AbstractExecutor(T) : Executor {
             }
         }
     }
+
 
     mixin Witchcraft!T;
 }

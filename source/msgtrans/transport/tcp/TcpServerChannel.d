@@ -2,14 +2,11 @@ module msgtrans.transport.tcp.TcpServerChannel;
 
 import msgtrans.transport.ServerChannel;
 import msgtrans.transport.TransportSession;
-import msgtrans.MessageBuffer;
-import msgtrans.Executor;
-
-
-// import msgtrans.ConnectionEventBaseHandler;
-// import msgtrans.protocol.protobuf.TcpConnectionEventHandler;
 import msgtrans.transport.tcp.TcpCodec;
 import msgtrans.transport.tcp.TcpTransportSession;
+
+import msgtrans.MessageBuffer;
+import msgtrans.Executor;
 
 import hunt.logging.ConsoleLogger;
 import hunt.net;
@@ -65,6 +62,11 @@ class TcpServerChannel : ServerChannel
         _server.listen(host, port);
     }
 
+    void stop() {
+        if(_server !is null)
+            _server.close();
+    }
+
     private void initialize() {
         _server = NetUtil.createNetServer!(ThreadMode.Single)(_options);
 
@@ -73,11 +75,11 @@ class TcpServerChannel : ServerChannel
         _server.setHandler(new class NetConnectionHandler {
 
             override void connectionOpened(Connection connection) {
-                infof("Connection created: %s", connection.getRemoteAddress());
+                version(HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
             }
 
             override void connectionClosed(Connection connection) {
-                infof("Connection closed: %s", connection.getRemoteAddress());
+                version(HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
             }
 
             override void messageReceived(Connection connection, Object message) {

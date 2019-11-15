@@ -46,4 +46,8 @@ class MessageTransportClient {
     void block() {
 
     }
+
+    void close() {
+        _channel.close();
+    }
 }
