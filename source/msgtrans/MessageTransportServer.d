@@ -1,6 +1,6 @@
 module msgtrans.MessageTransportServer;
 
-import msgtrans.transport.ServerChannel;
+import msgtrans.channel.ServerChannel;
 import msgtrans.SessionManager;
 
 import msgtrans.Executor;

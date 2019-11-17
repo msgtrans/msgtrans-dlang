@@ -1,4 +1,4 @@
-module msgtrans.transport.tcp.TcpEncoder;
+module msgtrans.channel.tcp.TcpEncoder;
 
 import hunt.net.codec.Encoder;
 import hunt.net.Connection;

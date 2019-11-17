@@ -1,4 +1,4 @@
-module msgtrans.transport.ClientChannel;
+module msgtrans.channel.ClientChannel;
 
 import msgtrans.MessageBuffer;
 import hunt.net;

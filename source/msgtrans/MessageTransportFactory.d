@@ -5,8 +5,8 @@ module msgtrans.MessageTransportFactory;
 // import msgtrans.ConnectionEventBaseHandler;
 // import msgtrans.ConnectionManager;
 
-// import msgtrans.transport.ServerChannel;
-// import msgtrans.transport.TransportClient;
+// import msgtrans.channel.ServerChannel;
+// import msgtrans.channel.TransportClient;
 
 // import std.typecons;
 

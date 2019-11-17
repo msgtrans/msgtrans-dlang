@@ -1,12 +1,12 @@
-module msgtrans.transport.tcp.TcpClientChannel;
+module msgtrans.channel.tcp.TcpClientChannel;
 
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
 import msgtrans.Executor;
-import msgtrans.transport.ClientChannel;
-import msgtrans.transport.tcp.TcpCodec;
-import msgtrans.transport.tcp.TcpTransportSession;
-import msgtrans.transport.TransportSession;
+import msgtrans.channel.ClientChannel;
+import msgtrans.channel.tcp.TcpCodec;
+import msgtrans.channel.tcp.TcpTransportSession;
+import msgtrans.channel.TransportSession;
 
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;

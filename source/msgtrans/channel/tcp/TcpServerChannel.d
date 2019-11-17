@@ -1,9 +1,9 @@
-module msgtrans.transport.tcp.TcpServerChannel;
+module msgtrans.channel.tcp.TcpServerChannel;
 
-import msgtrans.transport.ServerChannel;
-import msgtrans.transport.TransportSession;
-import msgtrans.transport.tcp.TcpCodec;
-import msgtrans.transport.tcp.TcpTransportSession;
+import msgtrans.channel.ServerChannel;
+import msgtrans.channel.TransportSession;
+import msgtrans.channel.tcp.TcpCodec;
+import msgtrans.channel.tcp.TcpTransportSession;
 
 import msgtrans.MessageBuffer;
 import msgtrans.Executor;

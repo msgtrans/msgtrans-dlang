@@ -1,6 +1,6 @@
-module msgtrans.transport.websocket.WebSocketTransportSession;
+module msgtrans.channel.websocket.WebSocketTransportSession;
 
-import msgtrans.transport.TransportSession;
+import msgtrans.channel.TransportSession;
 import msgtrans.MessageBuffer;
 import msgtrans.Packet;
 

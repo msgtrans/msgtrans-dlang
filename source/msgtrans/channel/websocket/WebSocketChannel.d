@@ -1,9 +1,9 @@
-module msgtrans.transport.websocket.WebSocketChannel;
+module msgtrans.channel.websocket.WebSocketChannel;
 
 import msgtrans.Executor;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
-import msgtrans.transport.websocket.WebSocketTransportSession;
+import msgtrans.channel.websocket.WebSocketTransportSession;
 
 import hunt.collection.ByteBuffer;
 import hunt.http.server;

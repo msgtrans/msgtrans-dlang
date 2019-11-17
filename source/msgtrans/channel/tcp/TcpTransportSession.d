@@ -1,8 +1,8 @@
-module msgtrans.transport.tcp.TcpTransportSession;
+module msgtrans.channel.tcp.TcpTransportSession;
 
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
-import msgtrans.transport.TransportSession;
+import msgtrans.channel.TransportSession;
 
 import hunt.net;
 import hunt.String;

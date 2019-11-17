@@ -1,4 +1,4 @@
-module msgtrans.transport.tcp.TcpDecoder;
+module msgtrans.channel.tcp.TcpDecoder;
 
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;

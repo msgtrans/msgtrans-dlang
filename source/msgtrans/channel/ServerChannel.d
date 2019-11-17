@@ -1,4 +1,4 @@
-module msgtrans.transport.ServerChannel;
+module msgtrans.channel.ServerChannel;
 
 /** 
  * 

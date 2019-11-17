@@ -1,17 +1,21 @@
 module msgtrans;
 
-public import msgtrans.MessageBuffer;
-public import msgtrans.Executor;
-public import msgtrans.transport.TransportSession;
-
-// Server
+// Main packages
 public import msgtrans.MessageTransportServer;
-public import msgtrans.transport.ServerChannel;
-public import msgtrans.transport.tcp.TcpServerChannel;
-public import msgtrans.transport.websocket.WebSocketServerChannel;
-
-// Client
 public import msgtrans.MessageTransportClient;
-public import msgtrans.transport.ClientChannel;
-public import msgtrans.transport.tcp.TcpClientChannel;
-public import msgtrans.transport.websocket.WebSocketClientChannel;
+public import msgtrans.MessageBuffer;
+public import msgtrans.executor.Executor;
+public import msgtrans.executor.AbstractExecutor;
+
+// Channel base packages
+public import msgtrans.channel.TransportSession;
+public import msgtrans.channel.ServerChannel;
+public import msgtrans.channel.ClientChannel;
+
+// Tcp channel
+public import msgtrans.channel.tcp.TcpServerChannel;
+public import msgtrans.channel.tcp.TcpClientChannel;
+
+// Websocket channel
+public import msgtrans.channel.websocket.WebSocketServerChannel;
+public import msgtrans.channel.websocket.WebSocketClientChannel;

@@ -1,4 +1,4 @@
-module msgtrans.transport.TransportSession;
+module msgtrans.channel.TransportSession;
 
 import msgtrans.MessageBuffer;
 import msgtrans.SessionManager;

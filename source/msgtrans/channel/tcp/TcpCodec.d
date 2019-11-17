@@ -1,11 +1,11 @@
-module msgtrans.transport.tcp.TcpCodec;
+module msgtrans.channel.tcp.TcpCodec;
 
 import hunt.net.codec.Codec;
 import hunt.net.codec.Encoder;
 import hunt.net.codec.Decoder;
 
-import msgtrans.transport.tcp.TcpDecoder;
-import msgtrans.transport.tcp.TcpEncoder;
+import msgtrans.channel.tcp.TcpDecoder;
+import msgtrans.channel.tcp.TcpEncoder;
 
 class TcpCodec : Codec
 {
