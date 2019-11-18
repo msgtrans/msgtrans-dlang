@@ -46,7 +46,7 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     {
         long msgId = buffer.id;
         string msg = cast(string) buffer.data;
-        warningf("session %d, message: %s", ctx.currentSession.id(), msg);
+        warningf("session %d, message: %s", ctx.session.id(), msg);
 
         // string welcome = "Welcome " ~ msg;
         // writeln(message.welcome);

@@ -4,7 +4,7 @@ import msgtrans.Packet;
 import msgtrans.MessageBuffer;
 import msgtrans.executor;
 import msgtrans.channel.ClientChannel;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
 import msgtrans.channel.TransportContext;

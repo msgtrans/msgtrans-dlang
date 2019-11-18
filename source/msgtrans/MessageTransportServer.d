@@ -1,7 +1,7 @@
 module msgtrans.MessageTransportServer;
 
 import msgtrans.channel.ServerChannel;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 
 import msgtrans.executor.Executor;
 import hunt.logging.ConsoleLogger;

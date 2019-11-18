@@ -5,12 +5,10 @@ public import msgtrans.MessageTransportServer;
 public import msgtrans.MessageTransportClient;
 public import msgtrans.MessageBuffer;
 public import msgtrans.executor;
-public import msgtrans.channel.TransportContext;
+public import msgtrans.SessionManager;
 
 // Channel base packages
-public import msgtrans.channel.TransportSession;
-public import msgtrans.channel.ServerChannel;
-public import msgtrans.channel.ClientChannel;
+public import msgtrans.channel;
 
 // Tcp channel
 public import msgtrans.channel.tcp.TcpServerChannel;

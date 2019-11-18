@@ -1,6 +1,6 @@
 module msgtrans.channel.TransportContext;
 
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 import msgtrans.channel.TransportSession;
 
 /** 
@@ -14,7 +14,7 @@ struct TransportContext {
         return _manager;
     }
 
-    TransportSession currentSession() {
+    TransportSession session() {
         return _currentSession;
     }
 }

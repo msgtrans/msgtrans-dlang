@@ -1,7 +1,7 @@
 module msgtrans.channel.tcp.TcpServerChannel;
 
 import msgtrans.channel.ServerChannel;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
@@ -24,6 +24,8 @@ class TcpServerChannel : ServerChannel {
     private NetServer _server;
     private SessionManager _sessionManager;
     private string _name = typeof(this).stringof;
+    
+    enum string ChannelSession = "ChannelSession";
 
     private {
         string _host;
@@ -87,6 +89,10 @@ class TcpServerChannel : ServerChannel {
 
             override void connectionClosed(Connection connection) {
                 version(HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
+                TransportSession session = cast(TransportSession)connection.getAttribute(ChannelSession);
+                if(session !is null ) {
+                    _sessionManager.remove(session);
+                }
             }
 
             override void messageReceived(Connection connection, Object message) {
@@ -128,7 +134,6 @@ class TcpServerChannel : ServerChannel {
         if (executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {
-            enum string ChannelSession = "ChannelSession";
             TcpTransportSession session = cast(TcpTransportSession) connection.getAttribute(
                     ChannelSession);
             if (session is null) {

@@ -1,7 +1,7 @@
 module msgtrans.channel.TransportSession;
 
 import msgtrans.MessageBuffer;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 
 import hunt.util.Serialize;
 import hunt.net;

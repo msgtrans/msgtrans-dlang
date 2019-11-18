@@ -1,6 +1,6 @@
 module msgtrans.channel.ServerChannel;
 
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 
 /** 
  * 

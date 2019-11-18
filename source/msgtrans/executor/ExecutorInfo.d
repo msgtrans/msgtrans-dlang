@@ -1,7 +1,7 @@
 module msgtrans.executor.ExecutorInfo;
 
 import msgtrans.MessageBuffer;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import witchcraft;
@@ -44,7 +44,7 @@ struct ExecutorInfo
             MessageBuffer buffer, Args args) nothrow {
         try {
             string objectKey = id();
-            TransportSession session = context.currentSession();
+            TransportSession session = context.session();
             Object obj = session.getAttribute(objectKey);
             if(obj is null) {
                 obj = _classMeta.create();

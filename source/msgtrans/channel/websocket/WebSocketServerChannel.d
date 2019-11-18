@@ -4,7 +4,7 @@ import msgtrans.executor;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.ServerChannel;
-import msgtrans.channel.SessionManager;
+import msgtrans.SessionManager;
 import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
