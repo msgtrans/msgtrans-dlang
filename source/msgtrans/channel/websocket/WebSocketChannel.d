@@ -1,6 +1,6 @@
 module msgtrans.channel.websocket.WebSocketChannel;
 
-import msgtrans.Executor;
+import msgtrans.executor;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.websocket.WebSocketTransportSession;

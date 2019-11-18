@@ -2,7 +2,7 @@ module msgtrans.channel.websocket.WebSocketClientChannel;
 
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
-import msgtrans.Executor;
+import msgtrans.executor.Executor;
 import msgtrans.channel.ClientChannel;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;

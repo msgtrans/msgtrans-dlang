@@ -6,7 +6,7 @@ import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
 
 import msgtrans.MessageBuffer;
-import msgtrans.Executor;
+import msgtrans.executor;
 
 import hunt.logging.ConsoleLogger;
 import hunt.net;

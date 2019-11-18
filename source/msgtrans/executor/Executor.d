@@ -1,8 +1,6 @@
-module msgtrans.Executor;
+module msgtrans.executor.Executor;
 
 import msgtrans.executor.ExecutorInfo;
-
-public import msgtrans.executor.MessageId;
 
 /** 
  * 

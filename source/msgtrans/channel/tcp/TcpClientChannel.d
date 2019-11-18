@@ -2,7 +2,7 @@ module msgtrans.channel.tcp.TcpClientChannel;
 
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
-import msgtrans.Executor;
+import msgtrans.executor;
 import msgtrans.channel.ClientChannel;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;

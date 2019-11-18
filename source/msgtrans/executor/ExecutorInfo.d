@@ -1,5 +1,14 @@
 module msgtrans.executor.ExecutorInfo;
 
+import msgtrans.MessageBuffer;
+import msgtrans.channel.TransportSession;
+import witchcraft;
+
+import hunt.logging;
+
+import std.conv;
+import std.range;
+
 /** 
  * 
  */

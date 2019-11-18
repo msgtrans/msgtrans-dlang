@@ -4,8 +4,7 @@ module msgtrans;
 public import msgtrans.MessageTransportServer;
 public import msgtrans.MessageTransportClient;
 public import msgtrans.MessageBuffer;
-public import msgtrans.executor.Executor;
-public import msgtrans.executor.AbstractExecutor;
+public import msgtrans.executor;
 
 // Channel base packages
 public import msgtrans.channel.TransportSession;

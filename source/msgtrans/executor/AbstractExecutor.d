@@ -1,4 +1,4 @@
-module msgtrans.executor.AbstraceExecutor;
+module msgtrans.executor.AbstractExecutor;
 
 import msgtrans.MessageBuffer;
 import msgtrans.channel.TransportSession;
