@@ -118,14 +118,15 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
         // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
-        ExecutorInfo executorInfo = Executor.getExecutor(message.id);
+        uint messageId = message.id;
+        ExecutorInfo executorInfo = Executor.getExecutor(messageId);
         if(executorInfo == ExecutorInfo.init) {
-            warning("No Executor found for id: ", message.id);
+            warning("No Executor found for id: ", messageId);
         } else {
             enum string ChannelSession = "ChannelSession";
             WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
-                session = new WebsocketTransportSession(nextClientSessionId(), connection);
+                session = new WebsocketTransportSession(nextClientSessionId(), messageId, connection);
                 connection.setAttribute(ChannelSession, session);
             }
             executorInfo.execute(session, message);

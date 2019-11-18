@@ -21,27 +21,21 @@ abstract class TransportSession {
     private
     {
         ulong _id;
-        // SessionManager _sessionManager;
+        uint _messageId;
     }
     
-    // this(SessionManager sessionManager) {
-    //     _id = sessionManager.genarateId();
-    //     _sessionManager = sessionManager;
-    // }
-    this(ulong id) {
+    this(ulong id, uint messageId) {
         _id = id;
-        // _id = sessionManager.genarateId();
-        // _sessionManager = sessionManager;
+        _messageId = messageId;
     }
 
     ulong id() {
         return _id;
     }
 
-    // SessionManager sessionManager()
-    // {
-    //     return _sessionManager;
-    // }
+    uint messageId() {
+        return _messageId;
+    }
 
     Object getAttribute(string key);
 
@@ -54,11 +48,6 @@ abstract class TransportSession {
     void send(uint messageId, string content) {
         send(new MessageBuffer(messageId, cast(ubyte[])content));
     }
-
-
-    // abstract Connection getConnection() {
-    //     return _connection;
-    // }
 
     void close();
 

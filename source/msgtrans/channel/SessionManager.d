@@ -2,6 +2,8 @@ module msgtrans.channel.SessionManager;
 
 import msgtrans.channel.TransportSession;
 
+import hunt.collection.List;
+import hunt.collection.ArrayList;
 import hunt.Exceptions;
 
 import core.atomic;
@@ -25,7 +27,7 @@ class SessionManager {
     private shared ulong _serverSessionId = 0;
 
     private {
-        TransportSession[ulong] _sessions;
+        List!(TransportSession)[uint] _sessions;
         Mutex _locker;
     }
 
@@ -37,14 +39,14 @@ class SessionManager {
         return atomicOp!("+=")(_serverSessionId, 1);
     }
 
-    TransportSession get(ulong id) {
-        auto itemPtr = id in _sessions;
+    TransportSession[] get(uint messageId) {
+        auto itemPtr = messageId in _sessions;
 
         if (itemPtr is null) {
             throw new NoSuchElementException();
         }
 
-        return *itemPtr;
+        return itemPtr.toArray();
     }
 
     void add(TransportSession session) {
@@ -53,12 +55,16 @@ class SessionManager {
         _locker.lock();
         scope(exit) _locker.unlock();
         
-        auto itemPtr = session.id() in _sessions;
-
+        uint messageId = session.messageId();
+        auto itemPtr = messageId in _sessions;
+        if(itemPtr is null) {
+            _sessions[messageId] = new ArrayList!(TransportSession)(512);
+        }
+        _sessions[messageId].add(session);
     }
 
-    bool exists(TransportSession session) {
-        auto itemPtr = session.id() in _sessions;
+    bool exists(uint messageId) {
+        auto itemPtr = messageId in _sessions;
 
         return itemPtr !is null;
     }

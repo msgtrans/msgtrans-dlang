@@ -16,11 +16,10 @@ import std.array;
 class TcpTransportSession : TransportSession {
     private Connection _conn = null;
 
-    this(long id, Connection connection) {
+    this(long id, uint messageId,  Connection connection) {
         _conn = connection;
-        super(id);
+        super(id, messageId);
     }
-
 
     override Object getAttribute(string key) {
         return _conn.getAttribute(key);
