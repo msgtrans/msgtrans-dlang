@@ -30,9 +30,10 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     }
 
     @MessageId(MESSAGE.HELLO)
-    void hello(TransportSession ctx, MessageBuffer buffer)
+    void hello(TransportContext ctx, MessageBuffer buffer)
     {
 
+        TransportSession session = ctx.currentSession();
         // HelloMessage message = unserialize!HelloMessage(cast(const byte[])buffer.data);
         // WelcomeMessage welcomeMessage = new WelcomeMessage;
         // welcomeMessage.welcome = "Hello " ~ message.name;
@@ -41,10 +42,10 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
 
         // ctx.send(new MessageBuffer(MESSAGE.WELCOME, cast(ubyte[])serialize(welcomeMessage)));
 
-        warningf("session %d, message: %s", ctx.id(), buffer.toString());
+        warningf("session %d, message: %s", session.id(), buffer.toString());
         string welcome = "Hello " ~ cast(string)buffer.data;
 
-        ctx.send(MESSAGE.WELCOME, welcome);
+        session.send(MESSAGE.WELCOME, welcome);
 
     }
 

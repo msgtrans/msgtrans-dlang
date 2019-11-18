@@ -22,12 +22,6 @@ class MessageTransportClient {
         _channel = channel;
         _channel.connect();
         _isConnected = true;
-        // try {
-        // } catch(Exception ex) {
-        //     debug warningf(ex.msg);
-        //     version(HUNT_DEBUG) warning(ex);
-        //     _channel.close();
-        // }
     }
 
     void send(uint id, ubyte[] msg ) {

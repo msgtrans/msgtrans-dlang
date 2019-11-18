@@ -5,6 +5,7 @@ import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.ServerChannel;
 import msgtrans.channel.SessionManager;
+import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
@@ -117,7 +118,9 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
             }
-            executorInfo.execute(session, message);
+            
+            TransportContext context = TransportContext(_sessionManager, session);
+            executorInfo.execute(context, message);
         }
     }
 

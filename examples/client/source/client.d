@@ -42,11 +42,11 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     }
 
     @MessageId(MESSAGE.WELCOME)
-    void welcome(TransportSession ctx, MessageBuffer buffer)
+    void welcome(TransportContext ctx, MessageBuffer buffer)
     {
         long msgId = buffer.id;
         string msg = cast(string) buffer.data;
-        warningf("session %d, message: %s", ctx.id(), msg);
+        warningf("session %d, message: %s", ctx.currentSession.id(), msg);
 
         // string welcome = "Welcome " ~ msg;
         // writeln(message.welcome);

@@ -5,6 +5,7 @@ import msgtrans.MessageBuffer;
 import msgtrans.executor;
 import msgtrans.channel.ClientChannel;
 import msgtrans.channel.SessionManager;
+import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
 import msgtrans.channel.websocket.WebSocketTransportSession;
@@ -129,7 +130,8 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
                 session = new WebsocketTransportSession(nextClientSessionId(), messageId, connection);
                 connection.setAttribute(ChannelSession, session);
             }
-            executorInfo.execute(session, message);
+            TransportContext context = TransportContext(null, session);
+            executorInfo.execute(context, message);
         }
     }    
 }

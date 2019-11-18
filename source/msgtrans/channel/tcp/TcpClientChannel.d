@@ -7,6 +7,7 @@ import msgtrans.channel.ClientChannel;
 import msgtrans.channel.SessionManager;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
+import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 
 import hunt.Exceptions;
@@ -113,7 +114,9 @@ class TcpClientChannel : ClientChannel {
                 session = new TcpTransportSession(nextClientSessionId(), messageId, connection);
                 connection.setAttribute(ChannelSession, session);
             }
-            executorInfo.execute(session, message);
+            
+            TransportContext context = TransportContext(null, session);
+            executorInfo.execute(context, message);
         }
     }
 

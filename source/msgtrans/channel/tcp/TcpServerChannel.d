@@ -2,6 +2,7 @@ module msgtrans.channel.tcp.TcpServerChannel;
 
 import msgtrans.channel.ServerChannel;
 import msgtrans.channel.SessionManager;
+import msgtrans.channel.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
@@ -135,7 +136,8 @@ class TcpServerChannel : ServerChannel {
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
             }
-            executorInfo.execute(session, message);
+            TransportContext context = TransportContext(_sessionManager, session);
+            executorInfo.execute(context, message);
         }
     }
 }
