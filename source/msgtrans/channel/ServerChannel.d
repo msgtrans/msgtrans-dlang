@@ -1,5 +1,7 @@
 module msgtrans.channel.ServerChannel;
 
+import msgtrans.channel.SessionManager;
+
 /** 
  * 
  */
@@ -10,4 +12,6 @@ interface ServerChannel
     void start();
 
     void stop();
+
+    void setSessionManager(SessionManager manager);
 }

@@ -1,6 +1,7 @@
 module msgtrans.channel.tcp.TcpServerChannel;
 
 import msgtrans.channel.ServerChannel;
+import msgtrans.channel.SessionManager;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
@@ -18,13 +19,12 @@ import std.uuid;
 /**
  * 
  */
-class TcpServerChannel : ServerChannel
-{
+class TcpServerChannel : ServerChannel {
     private NetServer _server;
+    private SessionManager _sessionManager;
     private string _name = typeof(this).stringof;
 
-    private
-    {
+    private {
         string _host;
         ushort _port;
 
@@ -35,16 +35,13 @@ class TcpServerChannel : ServerChannel
         this("0.0.0.0", port);
     }
 
-    this(string host , ushort port)
-    {
+    this(string host, ushort port) {
         this(host, port, new NetServerOptions());
     }
 
-    this(string host , ushort port, NetServerOptions options)
-    {
+    this(string host, ushort port, NetServerOptions options) {
         _host = host;
         _port = port;
-        // _codec = new TcpCodec();
         _options = options;
         // _name = randomUUID().toString();
     }
@@ -53,9 +50,13 @@ class TcpServerChannel : ServerChannel
         return _name;
     }
 
-    ushort port() {return _port;}
+    ushort port() {
+        return _port;
+    }
 
-    string host() {return _host;}
+    string host() {
+        return _host;
+    }
 
     void start() {
         initialize();
@@ -63,11 +64,16 @@ class TcpServerChannel : ServerChannel
     }
 
     void stop() {
-        if(_server !is null)
+        if (_server !is null)
             _server.close();
     }
 
+    void setSessionManager(SessionManager manager) {
+        _sessionManager = manager; 
+    }
+
     private void initialize() {
+        // dfmt off
         _server = NetUtil.createNetServer!(ThreadMode.Single)(_options);
 
         _server.setCodec(new TcpCodec());
@@ -102,26 +108,29 @@ class TcpServerChannel : ServerChannel
             override void failedAcceptingConnection(int connectionId, Throwable t) {
                 debug warning(t.msg);
             }
-        });      
+        });     
+        
+        // dfmt on 
     }
 
-    private static void dispatchMessage(Connection connection, MessageBuffer message ) {
-        version(HUNT_DEBUG) {
+    private void dispatchMessage(Connection connection, MessageBuffer message) {
+        version (HUNT_DEBUG) {
             string str = format("data received: %s", message.toString());
             tracef(str);
         }
 
         // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
-        
+
         ExecutorInfo executorInfo = Executor.getExecutor(message.id);
-        if(executorInfo == ExecutorInfo.init) {
+        if (executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", message.id);
         } else {
             enum string ChannelSession = "ChannelSession";
-            TcpTransportSession session = cast(TcpTransportSession)connection.getAttribute(ChannelSession);
-            if(session is null ){
-                session = new TcpTransportSession(nextServerSessionId(), connection);
+            TcpTransportSession session = cast(TcpTransportSession) connection.getAttribute(
+                    ChannelSession);
+            if (session is null) {
+                session = new TcpTransportSession(_sessionManager.genarateId(), connection);
                 connection.setAttribute(ChannelSession, session);
             }
             executorInfo.execute(session, message);

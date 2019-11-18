@@ -1,7 +1,7 @@
 module msgtrans.channel.TransportSession;
 
 import msgtrans.MessageBuffer;
-import msgtrans.SessionManager;
+import msgtrans.channel.SessionManager;
 
 import hunt.util.Serialize;
 import hunt.net;
@@ -11,16 +11,7 @@ import core.atomic;
 import std.stdint;
 import std.bitmanip;
 
-private shared ulong _serverSessionId = 0;
-private shared ulong _clientSessionId = 0;
 
-ulong nextServerSessionId() {
-    return atomicOp!("+=")(_serverSessionId, 1);
-}
-
-ulong nextClientSessionId() {
-    return atomicOp!("+=")(_clientSessionId, 1);
-}
 
 /** 
  * 
@@ -29,7 +20,7 @@ abstract class TransportSession {
 
     private
     {
-        long _id;
+        ulong _id;
         // SessionManager _sessionManager;
     }
     
@@ -37,13 +28,13 @@ abstract class TransportSession {
     //     _id = sessionManager.genarateId();
     //     _sessionManager = sessionManager;
     // }
-    this(long id) {
+    this(ulong id) {
         _id = id;
         // _id = sessionManager.genarateId();
         // _sessionManager = sessionManager;
     }
 
-    long id() {
+    ulong id() {
         return _id;
     }
 

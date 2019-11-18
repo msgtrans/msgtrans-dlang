@@ -1,7 +1,7 @@
 module msgtrans.MessageTransportServer;
 
 import msgtrans.channel.ServerChannel;
-import msgtrans.SessionManager;
+import msgtrans.channel.SessionManager;
 
 import msgtrans.executor.Executor;
 import hunt.logging.ConsoleLogger;
@@ -13,13 +13,20 @@ class MessageTransportServer {
 
     ServerChannel[string] _tranportServers;
     SessionManager _manager;
-    // Executor[string] executors;
+
+    this() {
+        this(new SessionManager());
+    }
+
+    this(SessionManager manager) {
+        _manager = manager;
+    }
 
     void addChannel(ServerChannel server) {
         string name = server.name();
         if(name in _tranportServers)
             throw new Exception("Server exists already: " ~ name);
-        tracef("Adding server: %s", name);
+        tracef("Adding server: %s, type: %s", name, typeid(cast(Object)server));
         _tranportServers[name] = server;
     }
 
@@ -32,6 +39,7 @@ class MessageTransportServer {
     {
         foreach(ServerChannel t; _tranportServers)
         {
+            t.setSessionManager(_manager);
             t.start();
         }
     }    

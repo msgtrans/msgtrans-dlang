@@ -1,9 +1,10 @@
 module msgtrans.channel.websocket.WebSocketServerChannel;
 
-import msgtrans.executor.Executor;
+import msgtrans.executor;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.ServerChannel;
+import msgtrans.channel.SessionManager;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
@@ -23,6 +24,7 @@ import std.stdio;
  */
 class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     private HttpServer _server;
+    private SessionManager _sessionManager;
     private string _name = typeof(this).stringof;
     private string _host = "0.0.0.0";
     private ushort _port = 8080;
@@ -58,6 +60,10 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
             _server.stop();
     }
 
+    void setSessionManager(SessionManager manager) {
+        _sessionManager = manager; 
+    }
+
     private void initialize() {
         _server = HttpServer.builder()
             // .setTLS("cert/server.crt", "cert/server.key", "hunt2018", "hunt2018")
@@ -90,8 +96,32 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
             .build();
     }
     
-    override ulong nextSessionId() {
-        return nextServerSessionId();
+    override protected void dispatchMessage(WebSocketConnection connection, MessageBuffer message ) {
+        version(HUNT_DEBUG) {
+            string str = format("data received: %s", message.toString());
+            tracef(str);
+        }
+
+        // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
+        // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
+        
+        ExecutorInfo executorInfo = Executor.getExecutor(message.id);
+        if(executorInfo == ExecutorInfo.init) {
+            warning("No Executor found for id: ", message.id);
+        } else {
+            enum string ChannelSession = "ChannelSession";
+            WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
+            if(session is null ){
+                session = new WebsocketTransportSession(_sessionManager.genarateId(), connection);
+                connection.setAttribute(ChannelSession, session);
+                _sessionManager.add(session);
+            }
+            executorInfo.execute(session, message);
+        }
     }
+
+    // override ulong nextSessionId() {
+    //     return _sessionManager.genarateId();
+    // }
 
 }

@@ -52,29 +52,6 @@ abstract class WebSocketChannel {
         return ctx;
     }
 
-    ulong nextSessionId();
-    
-    protected void dispatchMessage(WebSocketConnection connection, MessageBuffer message ) {
-        version(HUNT_DEBUG) {
-            string str = format("data received: %s", message.toString());
-            tracef(str);
-        }
-
-        // rx: 00 00 27 11 00 00 00 05 00 00 00 00 00 00 00 00 57 6F 72 6C 64
-        // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
-        
-        ExecutorInfo executorInfo = Executor.getExecutor(message.id);
-        if(executorInfo == ExecutorInfo.init) {
-            warning("No Executor found for id: ", message.id);
-        } else {
-            enum string ChannelSession = "ChannelSession";
-            WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
-            if(session is null ){
-                session = new WebsocketTransportSession(nextSessionId(), connection);
-                connection.setAttribute(ChannelSession, session);
-            }
-            executorInfo.execute(session, message);
-        }
-    }
+    protected void dispatchMessage(WebSocketConnection connection, MessageBuffer message );
 
 }
