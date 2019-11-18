@@ -11,9 +11,12 @@ import core.time : seconds;
 
 import hunt.util.Serialize;
 
+enum ServerName = "test";
+enum ClientName = "test";
+
 
 void main() {
-    MessageTransportServer server = new MessageTransportServer();
+    MessageTransportServer server = new MessageTransportServer(ServerName);
 
     server.addChannel(new TcpServerChannel(9001));
     // server.addChannel(new TcpServerChannel(9003));
@@ -30,6 +33,8 @@ void main() {
 /** 
  * 
  */
+@MessageServer(ServerName)
+@MessageClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor) {
 
     this() {

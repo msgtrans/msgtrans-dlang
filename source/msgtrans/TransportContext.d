@@ -1,6 +1,7 @@
 module msgtrans.TransportContext;
 
 import msgtrans.SessionManager;
+import msgtrans.DefaultSessionManager;
 import msgtrans.channel.TransportSession;
 
 
@@ -19,5 +20,10 @@ struct TransportContext {
 
     TransportSession session() {
         return _currentSession;
+    }
+
+    ulong id()
+    {
+        return session().id();
     }
 }

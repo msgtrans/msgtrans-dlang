@@ -50,6 +50,9 @@ class AbstractExecutor(T) : Executor if (is(T == class)) {
                         // Annoying const
                         executors[messageCode] = cast(ExecutorInfo) ExecutorInfo(messageCode, 
                             cast(Class)c, cast(Method)method);
+                        
+                        // MessageTransportFactory.getServer("test").addExecutor(cast(ExecutorInfo) ExecutorInfo(messageCode, 
+                        //     cast(Class)c, cast(Method)method));
 
                         infof("Executor registered, code:%d, method: %s in %s", messageCode, 
                             method.getName(), c.getFullName());

@@ -2,28 +2,35 @@ module msgtrans.MessageTransportServer;
 
 import msgtrans.channel.ServerChannel;
 import msgtrans.SessionManager;
+import msgtrans.DefaultSessionManager;
 import msgtrans.TransportContext;
-
+import msgtrans.MessageTransport;
 import msgtrans.executor.Executor;
+
 import hunt.logging.ConsoleLogger;
 
+__gshared MessageTransportServer[string] messageTransportServers;
 
 /** 
  * 
  */
-class MessageTransportServer {
+class MessageTransportServer : MessageTransport {
 
+
+    private string _name;
     private ContextHandler _acceptHandler;
 
     ServerChannel[string] _tranportServers;
     SessionManager _manager;
 
-    this() {
-        this(new SessionManager());
+    this(string name)
+    {
+        _name = SERVER_NAME_PREFIX ~ name;
     }
 
-    this(SessionManager manager) {
-        _manager = manager;
+    string name()
+    {
+        return _name;
     }
 
     void addChannel(ServerChannel server) {
@@ -38,8 +45,20 @@ class MessageTransportServer {
         _acceptHandler = handler;
     }
 
+    MessageTransportServer setSessionManager(SessionManager manager)
+    {
+        _manager = manager;
+
+        return this;
+    }
+
     SessionManager manager()
     {
+        if (_manager is null)
+        {
+            _manager = new DefaultSessionManager();
+        }
+
         return _manager;
     }
 
@@ -47,7 +66,7 @@ class MessageTransportServer {
     {
         foreach(ServerChannel t; _tranportServers)
         {
-            t.setSessionManager(_manager);
+            t.setSessionManager(this.manager());
             t.setAcceptHandler(_acceptHandler);
             t.start();
         }

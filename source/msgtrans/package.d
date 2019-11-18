@@ -1,6 +1,8 @@
 module msgtrans;
 
 // Main packages
+public import msgtrans.DefaultSessionManager;
+public import msgtrans.MessageTransport;
 public import msgtrans.MessageTransportServer;
 public import msgtrans.MessageTransportClient;
 public import msgtrans.MessageBuffer;

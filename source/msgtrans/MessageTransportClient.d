@@ -1,5 +1,6 @@
 module msgtrans.MessageTransportClient;
 
+import msgtrans.MessageTransport;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.ClientChannel;
 
@@ -8,12 +9,13 @@ import hunt.logging.ConsoleLogger;
 /** 
  * 
  */
-class MessageTransportClient {
+class MessageTransportClient : MessageTransport {
     private bool _isConnected = false;
     private ClientChannel _channel;
+    private string _name;
 
-    this() {
-
+    this(string name) {
+        _name = CLIENT_NAME_PREFIX ~ name;
     }
 
     void transport(ClientChannel channel) {
@@ -37,8 +39,8 @@ class MessageTransportClient {
         this.send(id, cast(ubyte[]) msg);
     }
 
-    void block() {
-
+    string name() {
+        return _name;
     }
 
     void close() {
