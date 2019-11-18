@@ -80,7 +80,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
                 override void onOpen(WebSocketConnection connection) {
                     version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());
                     WebsocketTransportSession session = 
-                        new WebsocketTransportSession(_sessionManager.genarateId(), 0, connection);
+                        new WebsocketTransportSession(_sessionManager.genarateId(), connection);
                     connection.setAttribute(ChannelSession, session);
                     _sessionManager.add(session);
                     TransportContext context = TransportContext(_sessionManager, session);
@@ -135,12 +135,9 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
         } else {
             WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
-                session = new WebsocketTransportSession(_sessionManager.genarateId(), messageId, connection);
+                session = new WebsocketTransportSession(_sessionManager.genarateId(), connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
-            } else if(session.messageId == 0) {
-                trace("set message id to: ", messageId);
-                session.messageId = messageId;
             }
             
             TransportContext context = TransportContext(_sessionManager, session);

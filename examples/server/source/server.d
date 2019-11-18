@@ -21,7 +21,7 @@ void main() {
 
     server.onAccept((TransportContext ctx) {
         TransportSession session = ctx.session();
-        infof("New connection: id=%d, messageId=%d", session.id(), session.messageId());
+        infof("New connection: id=%d, messageId=%d", session.id());
     });
 
     server.start(); // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
@@ -51,10 +51,10 @@ class MyExecutor : AbstractExecutor!(MyExecutor) {
 
         // list avaliable sessions
         SessionManager sessionManager = ctx.sessionManager();
-        TransportSession[] sessions = sessionManager.get();
+        TransportSession[] sessions = sessionManager.getAll();
 
         foreach (TransportSession s; sessions) {
-            tracef("session %d for %s", s.id, s.messageId);
+            tracef("session %d", s.id);
         }
 
         // response

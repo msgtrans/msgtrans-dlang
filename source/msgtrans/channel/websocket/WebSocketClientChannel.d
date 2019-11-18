@@ -46,6 +46,7 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
     }
 
     this(HttpURI url) {
+        assert(url.getScheme() == "http" || url.getScheme() == "ws", "Only http or ws supported");
         _url = url;
         _client = new HttpClient();
     }
@@ -127,7 +128,7 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
             enum string ChannelSession = "ChannelSession";
             WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
-                session = new WebsocketTransportSession(nextClientSessionId(), messageId, connection);
+                session = new WebsocketTransportSession(nextClientSessionId(), connection);
                 connection.setAttribute(ChannelSession, session);
             }
             TransportContext context = TransportContext(null, session);

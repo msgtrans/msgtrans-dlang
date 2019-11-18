@@ -29,7 +29,6 @@ class SessionManager {
     private shared ulong _serverSessionId = 0;
 
     private {
-        // List!(TransportSession)[uint] _sessions;
         TransportSession[ulong] _sessions;
         Mutex _locker;
     }
@@ -44,44 +43,28 @@ class SessionManager {
 
     TransportSession get(ulong id) {
         _locker.lock();
-        scope(exit) _locker.unlock();
+        scope (exit)
+            _locker.unlock();
         return _sessions.get(id, null);
     }
 
-    TransportSession[] get() {
+    TransportSession[] getAll() {
         return _sessions.byValue.array();
-    }
-
-    TransportSession[] getByMessageId(uint messageId) {
-        // auto itemPtr = messageId in _sessions;
-
-        // if (itemPtr is null) {
-        //     throw new NoSuchElementException();
-        // }
-
-        // return itemPtr.toArray();
-        implementationMissing(false);
-        return null;
     }
 
     void add(TransportSession session) {
         assert(session !is null);
 
         _locker.lock();
-        scope(exit) _locker.unlock();
+        scope (exit)
+            _locker.unlock();
         _sessions[session.id()] = session;
-        
-        // uint messageId = session.messageId();
-        // auto itemPtr = messageId in _sessions;
-        // if(itemPtr is null) {
-        //     _sessions[messageId] = new ArrayList!(TransportSession)(512);
-        // }
-        // _sessions[messageId].add(session);
     }
 
     void remove(ulong id) {
         _locker.lock();
-        scope(exit) _locker.unlock();
+        scope (exit)
+            _locker.unlock();
 
         _sessions.remove(id);
     }
@@ -90,19 +73,12 @@ class SessionManager {
         assert(session !is null);
 
         remove(session.id());
-        // _locker.lock();
-        // scope(exit) _locker.unlock();
-
-        // List!(TransportSession) sessions = _sessions.get(session.messageId(), null);
-        // bool r = sessions.remove(session);
-        // version(HUNT_DEBUG) {
-        //     infof("Session removed: msgId=%d, id=%d", session.messageId(), session.id());
-        // }
     }
 
     void clear() {
         _locker.lock();
-        scope(exit) _locker.unlock();
+        scope (exit)
+            _locker.unlock();
 
         _sessions.clear();
     }

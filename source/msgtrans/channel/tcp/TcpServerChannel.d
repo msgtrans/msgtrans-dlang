@@ -90,7 +90,7 @@ class TcpServerChannel : ServerChannel {
 
             override void connectionOpened(Connection connection) {
                 version(HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
-                TcpTransportSession session = new TcpTransportSession(_sessionManager.genarateId(), 0, connection);
+                TcpTransportSession session = new TcpTransportSession(_sessionManager.genarateId(), connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
                 TransportContext context = TransportContext(_sessionManager, session);
@@ -149,13 +149,10 @@ class TcpServerChannel : ServerChannel {
             TcpTransportSession session = cast(TcpTransportSession) connection.getAttribute(
                     ChannelSession);
             if (session is null) {
-                session = new TcpTransportSession(_sessionManager.genarateId(), messageId, connection);
+                session = new TcpTransportSession(_sessionManager.genarateId(), connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
-            } else if(session.messageId == 0) {
-                trace("set message id to: ", messageId);
-                session.messageId = messageId;
-            }
+            } 
 
             TransportContext context = TransportContext(_sessionManager, session);
             executorInfo.execute(context, message);

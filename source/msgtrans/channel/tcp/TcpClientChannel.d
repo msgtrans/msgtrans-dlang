@@ -111,7 +111,7 @@ class TcpClientChannel : ClientChannel {
             enum string ChannelSession = "ChannelSession";
             TcpTransportSession session = cast(TcpTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
-                session = new TcpTransportSession(nextClientSessionId(), messageId, connection);
+                session = new TcpTransportSession(nextClientSessionId(), connection);
                 connection.setAttribute(ChannelSession, session);
             }
             

@@ -14,9 +14,9 @@ import hunt.net;
 class WebsocketTransportSession : TransportSession {
     private WebSocketConnection _conn = null;
 
-    this(long id, uint messageId, WebSocketConnection connection) {
+    this(long id, WebSocketConnection connection) {
         _conn = connection;
-        super(id, messageId);
+        super(id);
     }
 
     override Object getAttribute(string key) {
