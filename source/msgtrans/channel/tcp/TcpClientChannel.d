@@ -7,7 +7,7 @@ import msgtrans.channel.ClientChannel;
 import msgtrans.SessionManager;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
-import msgtrans.channel.TransportContext;
+import msgtrans.TransportContext;
 import msgtrans.channel.TransportSession;
 
 import hunt.Exceptions;

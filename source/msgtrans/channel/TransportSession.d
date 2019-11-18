@@ -37,6 +37,10 @@ abstract class TransportSession {
         return _messageId;
     }
 
+    void messageId(uint id) {
+        _messageId = id;
+    }
+
     Object getAttribute(string key);
 
     void setAttribute(string key, Object value);

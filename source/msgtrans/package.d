@@ -6,6 +6,7 @@ public import msgtrans.MessageTransportClient;
 public import msgtrans.MessageBuffer;
 public import msgtrans.executor;
 public import msgtrans.SessionManager;
+public import msgtrans.TransportContext;
 
 // Channel base packages
 public import msgtrans.channel;

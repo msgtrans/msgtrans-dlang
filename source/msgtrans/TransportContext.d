@@ -1,7 +1,10 @@
-module msgtrans.channel.TransportContext;
+module msgtrans.TransportContext;
 
 import msgtrans.SessionManager;
 import msgtrans.channel.TransportSession;
+
+
+alias ContextHandler = void delegate(TransportContext);
 
 /** 
  * 

@@ -2,7 +2,7 @@ module msgtrans.executor.ExecutorInfo;
 
 import msgtrans.MessageBuffer;
 import msgtrans.SessionManager;
-import msgtrans.channel.TransportContext;
+import msgtrans.TransportContext;
 import msgtrans.channel.TransportSession;
 import witchcraft;
 

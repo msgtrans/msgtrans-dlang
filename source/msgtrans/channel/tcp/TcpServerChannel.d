@@ -2,7 +2,7 @@ module msgtrans.channel.tcp.TcpServerChannel;
 
 import msgtrans.channel.ServerChannel;
 import msgtrans.SessionManager;
-import msgtrans.channel.TransportContext;
+import msgtrans.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
@@ -23,6 +23,7 @@ import std.uuid;
 class TcpServerChannel : ServerChannel {
     private NetServer _server;
     private SessionManager _sessionManager;
+    private ContextHandler _acceptHandler;
     private string _name = typeof(this).stringof;
     
     enum string ChannelSession = "ChannelSession";
@@ -75,6 +76,10 @@ class TcpServerChannel : ServerChannel {
         _sessionManager = manager; 
     }
 
+    void setAcceptHandler(ContextHandler handler) {
+        _acceptHandler = handler;
+    }
+
     private void initialize() {
         // dfmt off
         _server = NetUtil.createNetServer!(ThreadMode.Single)(_options);
@@ -85,6 +90,13 @@ class TcpServerChannel : ServerChannel {
 
             override void connectionOpened(Connection connection) {
                 version(HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
+                TcpTransportSession session = new TcpTransportSession(_sessionManager.genarateId(), 0, connection);
+                connection.setAttribute(ChannelSession, session);
+                _sessionManager.add(session);
+                TransportContext context = TransportContext(_sessionManager, session);
+                if(_acceptHandler !is null) {
+                    _acceptHandler(context);
+                }
             }
 
             override void connectionClosed(Connection connection) {
@@ -140,7 +152,11 @@ class TcpServerChannel : ServerChannel {
                 session = new TcpTransportSession(_sessionManager.genarateId(), messageId, connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
+            } else if(session.messageId == 0) {
+                trace("set message id to: ", messageId);
+                session.messageId = messageId;
             }
+
             TransportContext context = TransportContext(_sessionManager, session);
             executorInfo.execute(context, message);
         }

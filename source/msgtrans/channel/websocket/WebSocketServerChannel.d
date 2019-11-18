@@ -5,7 +5,7 @@ import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.ServerChannel;
 import msgtrans.SessionManager;
-import msgtrans.channel.TransportContext;
+import msgtrans.TransportContext;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
@@ -26,10 +26,12 @@ import std.stdio;
 class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     private HttpServer _server;
     private SessionManager _sessionManager;
+    private ContextHandler _acceptHandler;
     private string _name = typeof(this).stringof;
     private string _host = "0.0.0.0";
     private ushort _port = 8080;
     private string _path = "/*";
+    enum string ChannelSession = "ChannelSession";
 
 
     this(ushort port , string path) {
@@ -64,6 +66,10 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     void setSessionManager(SessionManager manager) {
         _sessionManager = manager; 
     }
+    
+    void setAcceptHandler(ContextHandler handler) {
+        _acceptHandler = handler;
+    }
 
     private void initialize() {
         _server = HttpServer.builder()
@@ -73,6 +79,22 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
 
                 override void onOpen(WebSocketConnection connection) {
                     version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());
+                    WebsocketTransportSession session = 
+                        new WebsocketTransportSession(_sessionManager.genarateId(), 0, connection);
+                    connection.setAttribute(ChannelSession, session);
+                    _sessionManager.add(session);
+                    TransportContext context = TransportContext(_sessionManager, session);
+                    if(_acceptHandler !is null) {
+                        _acceptHandler(context);
+                    }
+                }
+
+                override void onClosed(WebSocketConnection connection)  { 
+                    version(HUNT_DEBUG) infof("closed with %s", connection.getRemoteAddress());
+                    TransportSession session = cast(TransportSession)connection.getAttribute(ChannelSession);
+                    if(session !is null ) {
+                        _sessionManager.remove(session);
+                    }
                 }
 
                 override void onText(WebSocketConnection connection, string text) {
@@ -111,21 +133,18 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {
-            enum string ChannelSession = "ChannelSession";
             WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
                 session = new WebsocketTransportSession(_sessionManager.genarateId(), messageId, connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
+            } else if(session.messageId == 0) {
+                trace("set message id to: ", messageId);
+                session.messageId = messageId;
             }
             
             TransportContext context = TransportContext(_sessionManager, session);
             executorInfo.execute(context, message);
         }
     }
-
-    // override ulong nextSessionId() {
-    //     return _sessionManager.genarateId();
-    // }
-
 }

@@ -13,12 +13,14 @@ import std.stdio : writeln;
 void main()
 {
     MessageTransportClient client = new MessageTransportClient();
+    
+    // TCP channel
     // client.transport(new TcpClientChannel("127.0.0.1", 9001));
     // client.transport(new TcpClientChannel("10.1.222.120", 9001));
 
-    client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
-
-    // client.transport(new WebsocketTransport("ws://msgtrans.huntlabs.net:9002/test"));
+    // WebSocket channel
+    // client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
+    client.transport(new WebSocketClientChannel("ws://127.0.0.1:9002/test"));
 
     // client.addExecutor(new MyExecutor);
 
@@ -34,7 +36,9 @@ void main()
     client.close();
 }
 
-
+/** 
+ * 
+ */
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
     this() {

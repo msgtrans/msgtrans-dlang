@@ -11,27 +11,32 @@ import core.time : seconds;
 
 import hunt.util.Serialize;
 
-void main()
-{
+
+void main() {
     MessageTransportServer server = new MessageTransportServer();
 
     server.addChannel(new TcpServerChannel(9001));
     // server.addChannel(new TcpServerChannel(9003));
-    // server.addChannel(new WebSocketServerChannel(9002, "/test"));
+    server.addChannel(new WebSocketServerChannel(9002, "/test"));
 
-    server.start();	 // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
+    server.onAccept((TransportContext ctx) {
+        TransportSession session = ctx.session();
+        infof("New connection: id=%d, messageId=%d", session.id(), session.messageId());
+    });
+
+    server.start(); // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
 }
 
-
-class MyExecutor : AbstractExecutor!(MyExecutor)
-{
+/** 
+ * 
+ */
+class MyExecutor : AbstractExecutor!(MyExecutor) {
 
     this() {
     }
 
     @MessageId(MESSAGE.HELLO)
-    void hello(TransportContext ctx, MessageBuffer buffer)
-    {
+    void hello(TransportContext ctx, MessageBuffer buffer) {
 
         TransportSession session = ctx.session();
         // HelloMessage message = unserialize!HelloMessage(cast(const byte[])buffer.data);
@@ -43,17 +48,17 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
         // ctx.send(new MessageBuffer(MESSAGE.WELCOME, cast(ubyte[])serialize(welcomeMessage)));
 
         warningf("session %d, message: %s", session.id(), buffer.toString());
-        
+
         // list avaliable sessions
         SessionManager sessionManager = ctx.sessionManager();
-        TransportSession[] sessions = sessionManager.get(MESSAGE.HELLO);
+        TransportSession[] sessions = sessionManager.get();
 
-        foreach(TransportSession s; sessions) {
-            tracef("avaliable session %d for %s", s.id, MESSAGE.HELLO);
+        foreach (TransportSession s; sessions) {
+            tracef("session %d for %s", s.id, s.messageId);
         }
 
         // response
-        string welcome = "Hello " ~ cast(string)buffer.data;
+        string welcome = "Hello " ~ cast(string) buffer.data;
         session.send(MESSAGE.WELCOME, welcome);
     }
 
