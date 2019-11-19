@@ -1,22 +1,22 @@
 module msgtrans.channel.ServerChannel;
 
-import msgtrans.SessionManager;
+import msgtrans.MessageTransport;
+// import msgtrans.SessionManager;
 import msgtrans.TransportContext;
-
 
 /** 
  * 
  */
-interface ServerChannel
-{
+interface ServerChannel {
     string name();
 
     void start();
 
     void stop();
 
-    void setSessionManager(SessionManager manager);
+    // void setSessionManager(SessionManager manager);
+    void set(MessageTransport transport);
 
-    void setAcceptHandler(ContextHandler handler);
+    void onAccept(ContextHandler handler);
 
 }

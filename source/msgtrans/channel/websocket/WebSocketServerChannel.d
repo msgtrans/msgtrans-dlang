@@ -3,9 +3,10 @@ module msgtrans.channel.websocket.WebSocketServerChannel;
 import msgtrans.executor;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
-import msgtrans.channel.ServerChannel;
+import msgtrans.MessageTransport;
 import msgtrans.SessionManager;
 import msgtrans.TransportContext;
+import msgtrans.channel.ServerChannel;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
@@ -27,6 +28,8 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     private HttpServer _server;
     private SessionManager _sessionManager;
     private ContextHandler _acceptHandler;
+    private MessageTransport _messageTransport;
+
     private string _name = typeof(this).stringof;
     private string _host = "0.0.0.0";
     private ushort _port = 8080;
@@ -41,6 +44,19 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
 
     string name() {
         return _name;
+    }
+
+    void set(MessageTransport transport) {
+        _messageTransport = transport;
+        _sessionManager = transport.sessionManager();
+    }    
+
+    // void setSessionManager(SessionManager manager) {
+    //     _sessionManager = manager; 
+    // }
+    
+    void onAccept(ContextHandler handler) {
+        _acceptHandler = handler;
     }
 
     void start() {
@@ -63,13 +79,6 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
             _server.stop();
     }
 
-    void setSessionManager(SessionManager manager) {
-        _sessionManager = manager; 
-    }
-    
-    void setAcceptHandler(ContextHandler handler) {
-        _acceptHandler = handler;
-    }
 
     private void initialize() {
         _server = HttpServer.builder()
@@ -129,7 +138,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
         uint messageId = message.id;
-        ExecutorInfo executorInfo = Executor.getExecutor(messageId);
+        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {

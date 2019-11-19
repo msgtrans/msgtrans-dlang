@@ -1,8 +1,9 @@
 module msgtrans.channel.tcp.TcpServerChannel;
 
-import msgtrans.channel.ServerChannel;
+import msgtrans.MessageTransport;
 import msgtrans.SessionManager;
 import msgtrans.TransportContext;
+import msgtrans.channel.ServerChannel;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
@@ -22,6 +23,7 @@ import std.uuid;
  */
 class TcpServerChannel : ServerChannel {
     private NetServer _server;
+    private MessageTransport _messageTransport;
     private SessionManager _sessionManager;
     private ContextHandler _acceptHandler;
     private string _name = typeof(this).stringof;
@@ -62,6 +64,11 @@ class TcpServerChannel : ServerChannel {
         return _host;
     }
 
+    void set(MessageTransport transport) {
+        _messageTransport = transport;
+        _sessionManager = transport.sessionManager();
+    }    
+
     void start() {
         initialize();
         _server.listen(host, port);
@@ -72,11 +79,7 @@ class TcpServerChannel : ServerChannel {
             _server.close();
     }
 
-    void setSessionManager(SessionManager manager) {
-        _sessionManager = manager; 
-    }
-
-    void setAcceptHandler(ContextHandler handler) {
+    void onAccept(ContextHandler handler) {
         _acceptHandler = handler;
     }
 
@@ -142,7 +145,7 @@ class TcpServerChannel : ServerChannel {
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
 
         uint messageId = message.id;
-        ExecutorInfo executorInfo = Executor.getExecutor(messageId);
+        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
         if (executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {

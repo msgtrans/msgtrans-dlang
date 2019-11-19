@@ -2,8 +2,11 @@ module msgtrans.SessionManager;
 
 import msgtrans.channel.TransportSession;
 
+/** 
+ * 
+ */
 interface SessionManager {
-    
+
     ulong genarateId();
 
     TransportSession get(ulong id);

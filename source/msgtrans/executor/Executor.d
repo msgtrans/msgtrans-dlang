@@ -2,17 +2,56 @@ module msgtrans.executor.Executor;
 
 import msgtrans.executor.ExecutorInfo;
 
+import hunt.logging.ConsoleLogger;
+
+import std.algorithm;
+import std.format;
+import std.range;
+
 /** 
  * 
  */
 interface Executor {
-    // __gshared const(ExecutorInfo)[int] executors;
-    __gshared ExecutorInfo[int] executors;
+    // Grouped by the name
+    private __gshared ExecutorInfo[][string] _executors;
 
-    static ExecutorInfo getExecutor(int code) {
-        auto itemPtr = code in executors;
+    static void registerExecutors(string name, ExecutorInfo[] executors...) {
+        
+        version(HUNT_DEBUG) {
+            foreach(ExecutorInfo e; executors) {
+                tracef("Registing executor to %s, id: %d, method: %s in %s", name, e.messageId(), 
+                    e.methodInfo().getName(), e.classInfo().getFullName());  
+            }
+        }     
+
+        auto itemPtr = name in _executors;
+        if(itemPtr is null) {
+            _executors[name] = executors.dup;
+        } else {
+            // collision check
+            ExecutorInfo[] existedexecutors = _executors[name];
+
+            foreach(ExecutorInfo e; executors) {
+                ExecutorInfo[] executorInfoes = existedexecutors.find!((ExecutorInfo a, uint b) 
+                    => a.messageId() == b)(e.messageId);
+
+                if(executorInfoes.length > 0) {
+                    ExecutorInfo executorInfo = executorInfoes[0];
+                    string msg = format("MessageId collision: id=%d in %s, between %s and %s",
+                        e.messageId, name, e.classInfo().getFullName(), executorInfo.classInfo().getFullName());
+                    warningf(msg);
+                    throw new Exception(msg);
+                }    
+            }
+
+            _executors[name] ~= executors.dup;
+        }
+    }
+
+    static ExecutorInfo[] getExecutors(string name) {
+        auto itemPtr = name in _executors;
         if(itemPtr is null)
-            return ExecutorInfo.init;
+            return null;
         return *itemPtr;
     }
 }

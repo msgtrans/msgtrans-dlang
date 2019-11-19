@@ -4,7 +4,6 @@ import msgtrans.SessionManager;
 import msgtrans.DefaultSessionManager;
 import msgtrans.channel.TransportSession;
 
-
 alias ContextHandler = void delegate(TransportContext);
 
 /** 
@@ -22,8 +21,7 @@ struct TransportContext {
         return _currentSession;
     }
 
-    ulong id()
-    {
+    ulong id() {
         return session().id();
     }
 }

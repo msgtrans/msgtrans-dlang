@@ -24,7 +24,7 @@ void main() {
 
     server.onAccept((TransportContext ctx) {
         TransportSession session = ctx.session();
-        infof("New connection: id=%d, messageId=%d", session.id());
+        infof("New connection: id=%d", session.id());
     });
 
     server.start(); // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)

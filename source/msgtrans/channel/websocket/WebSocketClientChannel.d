@@ -1,11 +1,12 @@
 module msgtrans.channel.websocket.WebSocketClientChannel;
 
-import msgtrans.Packet;
-import msgtrans.MessageBuffer;
-import msgtrans.executor;
-import msgtrans.channel.ClientChannel;
 import msgtrans.DefaultSessionManager;
+import msgtrans.executor;
+import msgtrans.MessageBuffer;
+import msgtrans.MessageTransport;
+import msgtrans.Packet;
 import msgtrans.TransportContext;
+import msgtrans.channel.ClientChannel;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
 import msgtrans.channel.websocket.WebSocketTransportSession;
@@ -32,6 +33,7 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
     
     private HttpClient _client;
     private WebSocketConnection _connection;
+    private MessageTransport _messageTransport;
     
 
     this(string host, ushort port, string path) {
@@ -51,6 +53,10 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
         _client = new HttpClient();
     }
 
+    void set(MessageTransport transport) {
+        _messageTransport = transport;
+    }    
+    
     void connect() {
 
         if(_connection !is null) {
@@ -106,6 +112,10 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
     }
 
     void close() {
+        if(_connection !is null) {
+            _connection.close();
+        }
+        
         if(_client !is null) {
             _client.close();
         }
@@ -121,7 +131,7 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
         uint messageId = message.id;
-        ExecutorInfo executorInfo = Executor.getExecutor(messageId);
+        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {

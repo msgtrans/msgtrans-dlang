@@ -10,10 +10,12 @@ import hunt.logging;
 
 import std.stdio : writeln;
 
+enum string ClientName = "test";
+
 void main()
 {
-    MessageTransportClient client = new MessageTransportClient();
-    
+    MessageTransportClient client = new MessageTransportClient(ClientName);
+
     // TCP channel
     // client.transport(new TcpClientChannel("127.0.0.1", 9001));
     // client.transport(new TcpClientChannel("10.1.222.120", 9001));
@@ -22,12 +24,7 @@ void main()
     // client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
     client.transport(new WebSocketClientChannel("ws://127.0.0.1:9002/test"));
 
-    // client.addExecutor(new MyExecutor);
-
-    // client.codec(new CustomCodec).keepAlive().connect();
-
     // auto message = new HelloMessage;
-    // message.name = "zoujiaqing";
     warning("sending message");
     client.send(MESSAGE.HELLO, "World");
     warning("waiting for response");
@@ -39,9 +36,12 @@ void main()
 /** 
  * 
  */
+
+@MessageClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
-    this() {
+    this()
+    {
 
     }
 

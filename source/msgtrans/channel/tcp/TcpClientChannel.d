@@ -1,20 +1,21 @@
 module msgtrans.channel.tcp.TcpClientChannel;
 
-import msgtrans.Packet;
-import msgtrans.MessageBuffer;
+import msgtrans.DefaultSessionManager;
 import msgtrans.executor;
 import msgtrans.channel.ClientChannel;
-import msgtrans.DefaultSessionManager;
+import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
+import msgtrans.MessageBuffer;
+import msgtrans.MessageTransport;
+import msgtrans.Packet;
 import msgtrans.TransportContext;
-import msgtrans.channel.TransportSession;
 
 import hunt.Exceptions;
+// import hunt.concurrency.FuturePromise;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
 
-import hunt.concurrency.FuturePromise;
 
 import core.sync.condition;
 import core.sync.mutex;
@@ -28,6 +29,7 @@ class TcpClientChannel : ClientChannel {
     private string _host;
     private ushort _port;
 
+    private MessageTransport _messageTransport;
     private NetClient _client;
     private NetClientOptions _options;
     private Connection _connection;
@@ -46,6 +48,10 @@ class TcpClientChannel : ClientChannel {
 		_connectLocker = new Mutex();
 		_connectCondition = new Condition(_connectLocker);
     }
+
+    void set(MessageTransport transport) {
+        _messageTransport = transport;
+    }    
 
     private void initialize() {
 
@@ -94,7 +100,7 @@ class TcpClientChannel : ClientChannel {
     }
 
     
-    private static void dispatchMessage(Connection connection, MessageBuffer message ) {
+    private void dispatchMessage(Connection connection, MessageBuffer message ) {
         version(HUNT_DEBUG) {
             string str = format("data received: %s", message.toString());
             tracef(str);
@@ -104,7 +110,7 @@ class TcpClientChannel : ClientChannel {
         // rx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
         
         uint messageId = message.id;
-        ExecutorInfo executorInfo = Executor.getExecutor(messageId);
+        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
         if(executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
         } else {
