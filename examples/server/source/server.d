@@ -2,6 +2,7 @@ import hunt.net;
 import hunt.logging;
 
 import msgtrans;
+
 import message.Constants;
 import message.HelloMessage;
 import message.WelcomeMessage;
@@ -15,16 +16,16 @@ enum ServerName = "test";
 enum ClientName = "test";
 
 
-void main() {
+void main()
+{
     MessageTransportServer server = new MessageTransportServer(ServerName);
 
     server.addChannel(new TcpServerChannel(9001));
-    // server.addChannel(new TcpServerChannel(9003));
     server.addChannel(new WebSocketServerChannel(9002, "/test"));
 
-    server.onAccept((TransportContext ctx) {
+    server.acceptor((TransportContext ctx) {
         TransportSession session = ctx.session();
-        infof("New connection: id=%d", session.id());
+        infof("New connection: id=%d", ctx.id());
     });
 
     server.start(); // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
@@ -35,9 +36,8 @@ void main() {
  */
 @TransportServer(ServerName)
 @TransportClient(ClientName)
-class MyExecutor : AbstractExecutor!(MyExecutor) {
-
-
+class MyExecutor : AbstractExecutor!(MyExecutor)
+{
 
     @MessageId(MESSAGE.HELLO)
     void hello(TransportContext ctx, MessageBuffer buffer) {
@@ -55,9 +55,8 @@ class MyExecutor : AbstractExecutor!(MyExecutor) {
 
         // list avaliable sessions
         SessionManager sessionManager = ctx.sessionManager();
-        TransportSession[] sessions = sessionManager.getAll();
-
-        foreach (TransportSession s; sessions) {
+        
+        foreach (s; sessionManager.getAll()) {
             tracef("session %d", s.id);
         }
 
@@ -65,5 +64,4 @@ class MyExecutor : AbstractExecutor!(MyExecutor) {
         string welcome = "Hello " ~ cast(string) buffer.data;
         session.send(MESSAGE.WELCOME, welcome);
     }
-
 }

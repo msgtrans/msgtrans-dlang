@@ -1,3 +1,14 @@
+/*
+ * MsgTrans - Message Transport Framework for DLang. Based on TCP, WebSocket, UDP transmission protocol.
+ *
+ * Copyright (C) 2019 HuntLabs
+ *
+ * Website: https://www.msgtrans.org
+ *
+ * Licensed under the Apache-2.0 License.
+ *
+ */
+
 module msgtrans.channel.websocket.WebSocketServerChannel;
 
 import msgtrans.executor;
@@ -27,7 +38,7 @@ import std.stdio;
 class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     private HttpServer _server;
     private SessionManager _sessionManager;
-    private ContextHandler _acceptHandler;
+    private AcceptHandler _acceptHandler;
     private MessageTransport _messageTransport;
 
     private string _name = typeof(this).stringof;
@@ -55,7 +66,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     //     _sessionManager = manager; 
     // }
     
-    void onAccept(ContextHandler handler) {
+    void onAccept(AcceptHandler handler) {
         _acceptHandler = handler;
     }
 

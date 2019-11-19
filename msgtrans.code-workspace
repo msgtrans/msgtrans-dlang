@@ -1,14 +1,14 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "examples/server"
-		},
-		{
-			"path": "examples/client"
-		}
-	],
-	"settings": {}
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "examples/server"
+        },
+        {
+            "path": "examples/client"
+        }
+    ],
+    "settings": {}
 }

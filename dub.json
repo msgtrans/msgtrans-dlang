@@ -1,13 +1,13 @@
 {
-	"name": "msgtrans",
-	"description": "Message Transport Framework. Based on TCP, WebSocket, UDP transmission protocol.",
-	"copyright": "Copyright (c) 2017-2019, HuntLabs",
-	"homepage": "http://www.huntlabs.net",
-	"license": "Apache-2.0",
-	"dependencies": {
-		"hunt": "~>1.4.0",
-		"hunt-net": "~>0.4.2",
-		"hunt-http": "~>0.4.0-beta.5",
-		"hunt-reflection": "~>0.2.0"
-	}
+    "name": "msgtrans",
+    "description": "Message Transport Framework. Based on TCP, WebSocket, UDP transmission protocol.",
+    "copyright": "Copyright (c) 2017-2019, HuntLabs",
+    "homepage": "http://www.huntlabs.net",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "hunt": "~>1.4.0",
+        "hunt-net": "~>0.4.2",
+        "hunt-http": "~>0.5.0-beta.1",
+        "hunt-reflection": "~>0.2.0"
+    }
 }

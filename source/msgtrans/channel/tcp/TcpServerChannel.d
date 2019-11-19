@@ -1,3 +1,14 @@
+/*
+ * MsgTrans - Message Transport Framework for DLang. Based on TCP, WebSocket, UDP transmission protocol.
+ *
+ * Copyright (C) 2019 HuntLabs
+ *
+ * Website: https://www.msgtrans.org
+ *
+ * Licensed under the Apache-2.0 License.
+ *
+ */
+
 module msgtrans.channel.tcp.TcpServerChannel;
 
 import msgtrans.MessageTransport;
@@ -25,7 +36,7 @@ class TcpServerChannel : ServerChannel {
     private NetServer _server;
     private MessageTransport _messageTransport;
     private SessionManager _sessionManager;
-    private ContextHandler _acceptHandler;
+    private AcceptHandler _acceptHandler;
     private string _name = typeof(this).stringof;
     
     enum string ChannelSession = "ChannelSession";
@@ -79,7 +90,7 @@ class TcpServerChannel : ServerChannel {
             _server.close();
     }
 
-    void onAccept(ContextHandler handler) {
+    void onAccept(AcceptHandler handler) {
         _acceptHandler = handler;
     }
 
