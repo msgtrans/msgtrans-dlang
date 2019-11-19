@@ -38,7 +38,7 @@ class DefaultSessionManager : SessionManager {
         _locker = new Mutex();
     }
 
-    package ulong genarateId() {
+    ulong genarateId() {
         return atomicOp!("+=")(_serverSessionId, 1);
     }
 

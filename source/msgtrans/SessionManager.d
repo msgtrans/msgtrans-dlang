@@ -4,7 +4,7 @@ import msgtrans.channel.TransportSession;
 
 interface SessionManager {
     
-    package ulong genarateId();
+    ulong genarateId();
 
     TransportSession get(ulong id);
 
