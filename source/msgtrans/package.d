@@ -14,9 +14,7 @@ public import msgtrans.TransportContext;
 public import msgtrans.channel;
 
 // Tcp channel
-public import msgtrans.channel.tcp.TcpServerChannel;
-public import msgtrans.channel.tcp.TcpClientChannel;
+public import msgtrans.channel.tcp;
 
 // Websocket channel
-public import msgtrans.channel.websocket.WebSocketServerChannel;
-public import msgtrans.channel.websocket.WebSocketClientChannel;
+public import msgtrans.channel.websocket;

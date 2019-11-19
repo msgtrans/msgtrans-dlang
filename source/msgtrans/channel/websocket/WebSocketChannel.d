@@ -53,5 +53,4 @@ abstract class WebSocketChannel {
     }
 
     protected void dispatchMessage(WebSocketConnection connection, MessageBuffer message );
-
 }
