@@ -33,12 +33,11 @@ void main() {
 /** 
  * 
  */
-@MessageServer(ServerName)
-@MessageClient(ClientName)
+@TransportServer(ServerName)
+@TransportClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor) {
 
-    this() {
-    }
+
 
     @MessageId(MESSAGE.HELLO)
     void hello(TransportContext ctx, MessageBuffer buffer) {

@@ -20,11 +20,9 @@ import std.variant;
  * 
  */
 class AbstractExecutor(T) : Executor if (is(T == class)) { 
-    // && __traits(compiles, new T())
-    // && is(typeof(new T()))
 
-    // TODO: Tasks pending completion -@zhangxueping at 2019-11-14T18:50:12+08:00
-    // To check the default constructor.
+    this() {
+    }
 
     shared static this() {
 
@@ -60,7 +58,7 @@ class AbstractExecutor(T) : Executor if (is(T == class)) {
         }
 
         // Register executor for Server
-        const(Attribute)[] attrs = c.getAttributes!(MessageServer)();
+        const(Attribute)[] attrs = c.getAttributes!(TransportServer)();
         foreach(const(Attribute) attr; attrs) {
             // trace(attr.toString());
             if(!attr.isExpression()) 
@@ -68,14 +66,14 @@ class AbstractExecutor(T) : Executor if (is(T == class)) {
 
             Variant value = attr.get();
             // trace(value.type.toString());
-            MessageServer messageServer = value.get!(MessageServer)();
+            TransportServer messageServer = value.get!(TransportServer)();
             // trace(messageServer.name);
-            Executor.registerExecutors(MessageServer.NAME_PREFIX ~ messageServer.name, executors);
+            Executor.registerExecutors(TransportServer.NAME_PREFIX ~ messageServer.name, executors);
         }
 
 
         // Register executor for Client
-        attrs = c.getAttributes!(MessageClient)();
+        attrs = c.getAttributes!(TransportClient)();
         foreach(const(Attribute) attr; attrs) {
             // trace(attr.toString());
             if(!attr.isExpression()) 
@@ -83,9 +81,9 @@ class AbstractExecutor(T) : Executor if (is(T == class)) {
 
             Variant value = attr.get();
             // trace(value.type.toString());
-            MessageClient messageclient = value.get!(MessageClient)();
+            TransportClient messageclient = value.get!(TransportClient)();
             // trace(messageclient.name);
-            Executor.registerExecutors(MessageClient.NAME_PREFIX ~ messageclient.name, executors);
+            Executor.registerExecutors(TransportClient.NAME_PREFIX ~ messageclient.name, executors);
         }
 
     }

@@ -37,7 +37,7 @@ void main()
  * 
  */
 
-@MessageClient(ClientName)
+@TransportClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
     this()

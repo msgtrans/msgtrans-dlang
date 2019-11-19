@@ -112,10 +112,10 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
     }
 
     void close() {
-        if(_connection !is null) {
-            _connection.close();
-        }
-        
+        // if(_connection !is null) {
+        //     _connection.close();
+        // }
+
         if(_client !is null) {
             _client.close();
         }

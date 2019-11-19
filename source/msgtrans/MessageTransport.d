@@ -51,7 +51,7 @@ abstract class MessageTransport {
 /** 
  * 
  */
-struct MessageServer {
+struct TransportServer {
     enum NAME_PREFIX = "SERVER-";
     string name;
 }
@@ -59,7 +59,7 @@ struct MessageServer {
 /** 
  * 
  */
-struct MessageClient {
+struct TransportClient {
     enum NAME_PREFIX = "CLIENT-";
     string name;
 }
