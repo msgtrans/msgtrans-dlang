@@ -17,12 +17,12 @@ void main()
     MessageTransportClient client = new MessageTransportClient(ClientName);
 
     // TCP channel
-    // client.transport(new TcpClientChannel("127.0.0.1", 9001));
+    client.transport(new TcpClientChannel("127.0.0.1", 9001));
     // client.transport(new TcpClientChannel("10.1.222.120", 9001));
 
     // WebSocket channel
     // client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
-    client.transport(new WebSocketClientChannel("ws://127.0.0.1:9002/test"));
+    // client.transport(new WebSocketClientChannel("ws://127.0.0.1:9002/test"));
 
     // auto message = new HelloMessage;
     warning("sending message");
