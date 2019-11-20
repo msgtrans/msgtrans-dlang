@@ -92,18 +92,18 @@ class TcpDecoder : DecoderChain {
 
     override
     void decode(ByteBuffer buf, Connection connection) { 
-        tracef("connection %d: %s", connection.getId(), buf.toString());
+        version(HUNT_MESSAGE_DEBUG) tracef("connection %d: %s", connection.getId(), buf.toString());
         PacketParser parser = getParser(connection);
 
         MessageBuffer[] msgBuffers = parser.parse(buf);
         if(msgBuffers is null) {
-            warning("no message frame parsed.");
+            warning("No frame parsed.");
             return;
         }
 
         NetConnectionHandler handler = connection.getHandler();
         if(handler is null) {
-            warning("No handler found");
+            warning("No handler found.");
             return;
         }
 

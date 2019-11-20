@@ -27,6 +27,9 @@ enum int COMPRESSION_FIELD_LENGTH = byte.sizeof;
 enum int EXTENSION_FIELD_LENGTH = ushort.sizeof;
 enum int PACKET_HEADER_LENGTH = 16;
 
+enum int MAX_PACKET_SIZE = 4 * 1024 * 1024; // 4M
+
+__gshared uint[] avaliableMessageIds;
 
 /* -------------------------------------------------------------------------- */
 
@@ -94,6 +97,9 @@ class PacketHeader
 
         ubyte[ID_FIELD_LENGTH] idBytes = data[0..ID_FIELD_LENGTH];
         uint id = bigEndianToNative!(uint)(idBytes);
+        if(id == 0) {
+            return null;
+        }
         
         enum LengthStart = ID_FIELD_LENGTH;
         enum LengthEnd = ID_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
@@ -144,6 +150,6 @@ class PacketHeader
     }
 
     override string toString() {
-        return format("id: %d, lenth: %d", _messageID, _messageLength);
+        return format("id: %d, length: %d", _messageID, _messageLength);
     }
 }
