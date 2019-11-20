@@ -16,8 +16,6 @@ import hunt.collection.BufferUtils;
 import hunt.collection.List;
 import hunt.collection.ArrayList;
 
-// import hunt.collection.StringBuffer;
-
 import hunt.logging.ConsoleLogger;
 import hunt.util.Serialize;
 
@@ -39,32 +37,13 @@ class PacketParser {
     }
 
     private void mergeBuffer(ByteBuffer now) {
-        // int remaining = 0;
-        // if(_receivedPacketBuf !is null)
-        //     remaining = _receivedPacketBuf.remaining();
-            
-        // if(remaining == 0) {
-        //     _receivedPacketBuf = buffer;
-        // } else {
-        //     size_t newPosition = _receivedPacketBuf.position() + buffer.remaining();
-        //     infof("buffer: %d", buffer.remaining());
-        //     infof("last buffer: %d, newPosition=%d, %s", _receivedPacketBuf.remaining(), newPosition, _receivedPacketBuf.toString());
-        //     if(newPosition > _receivedPacketBuf.capacity()) {
-        //         size_t newLength = max(newPosition, _defaultBufferSize);
-        //         warningf("reset buffer to: %d", newLength);
-        //         ByteBuffer tempBuffer = BufferUtils.allocate(cast(int)newLength);
-        //         tempBuffer.put(_receivedPacketBuf);
-        //         _receivedPacketBuf = tempBuffer;
-        //     }
-            
-        //     _receivedPacketBuf.put(buffer);
-        //     trace(_receivedPacketBuf.toString());
-        //     _receivedPacketBuf.flip();
-        // }
-        
-        // trace(_receivedPacketBuf.toString());
-
-        if (_receivedPacketBuf !is null) {
+        if (_receivedPacketBuf is null) {
+            version(HUNT_MESSAGE_DEBUG) tracef("buffering data: %d, bytes", now.remaining());
+            // ByteBuffer ret = newBuffer(now.remaining());
+            // ret.put(now).flip();
+            // _receivedPacketBuf = ret;
+            _receivedPacketBuf = now;
+        } else {
             if (_receivedPacketBuf.hasRemaining()) {
                 version(HUNT_MESSAGE_DEBUG) {
                     tracef("merge buffer -> %s, %s", _receivedPacketBuf.remaining(), now.remaining());
@@ -87,12 +66,6 @@ class PacketParser {
                     _receivedPacketBuf = ret;
                 }
             }
-        } else {
-            version(HUNT_MESSAGE_DEBUG) tracef("buffering data: %d, bytes", now.remaining());
-            // ByteBuffer ret = newBuffer(now.remaining());
-            // ret.put(now).flip();
-            // _receivedPacketBuf = ret;
-            _receivedPacketBuf = now;
         }
         version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());        
     }
@@ -111,8 +84,7 @@ class PacketParser {
         MessageBuffer[] resultBuffers;
         size_t dataStart = 0;
 
-        while (_receivedPacketBuf.remaining() >= PACKET_HEADER_LENGTH)
-        {
+        while (_receivedPacketBuf.remaining() >= PACKET_HEADER_LENGTH) {
             ubyte[] data = cast(ubyte[])_receivedPacketBuf.getRemaining();
             PacketHeader header = PacketHeader.parse(data);
             if(header is null) {
@@ -123,20 +95,17 @@ class PacketParser {
                     else
                         infof("%(%02X %) ...", data[0 .. 64]);
                 }
-                _receivedPacketBuf.clear(); // All buffered data will be dropped.
-                _receivedPacketBuf.flip();
+                _receivedPacketBuf.clear().flip(); // All buffered data will be dropped.
                 version(HUNT_MESSAGE_DEBUG) {
                     tracef("_receivedPacketBuf: %d, %s",
                      _receivedPacketBuf.remaining(), _receivedPacketBuf.toString());
                 }
                 return null;
 
-            // TODO: Tasks pending completion -@zhangxueping at 2019-11-20T14:11:22+08:00
-            // 
-            // } else if(!avaliableMessageIds.canFind(header.messageId())) {
-            //     warningf("Unrecognized packet: %s", header.toString());
-            //     _receivedPacketBuf.clear(); 
-            //     return null;
+            } else if(AvaliableMessageIds.length>0 && !AvaliableMessageIds.canFind(header.messageId())) {
+                warningf("Unrecognized packet: %s", header.toString());
+                _receivedPacketBuf.clear().flip(); 
+                return null;
             }
 
             version(HUNT_DEBUG) infof("packet header, %s", header.toString());
@@ -156,28 +125,26 @@ class PacketParser {
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
         } 
         
-        int remaining = _receivedPacketBuf.remaining(); // version(HUNT_MESSAGE_DEBUG) 
-        version(HUNT_MESSAGE_DEBUG) tracef("remaining: %d, buffer: %s", remaining, _receivedPacketBuf.toString());
+        int remaining = _receivedPacketBuf.remaining(); 
+        version(HUNT_MESSAGE_DEBUG) {
+            tracef("remaining: %d, buffer: %s", remaining, _receivedPacketBuf.toString());
+        }
+        
         if(remaining > 0) {
             byte[] data = cast(byte[])_receivedPacketBuf.getRemaining();
             size_t newLength = max(remaining, _defaultBufferSize);
             if(_receivedPacketBuf is buffer || newLength > _receivedPacketBuf.capacity()) {
                 version(HUNT_DEBUG) infof("reset buffer's size to %d bytes", newLength);
                 _receivedPacketBuf = BufferUtils.allocate(cast(int)newLength);
-                _receivedPacketBuf.put(data.dup); // buffer the remaining
-                version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
-                _receivedPacketBuf.flip();
+                _receivedPacketBuf.put(data.dup).flip(); // buffer the remaining
                 version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
             } else if(resultBuffers.length > 0) {
-                warning("buffer the remaining: %s", _receivedPacketBuf.toString());
+                version(HUNT_MESSAGE_DEBUG) warning("buffer the remaining: %s", _receivedPacketBuf.toString());
                 _receivedPacketBuf.rewind();
-                
-                _receivedPacketBuf.put(data.dup); // buffer the remaining
-                version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
-                _receivedPacketBuf.flip();
+                _receivedPacketBuf.put(data.dup).flip(); // buffer the remaining
                 version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
             } else {
-                warning("do nothing");
+                version(HUNT_MESSAGE_DEBUG) warning("do nothing");
             }
         } else {
             _receivedPacketBuf = null;

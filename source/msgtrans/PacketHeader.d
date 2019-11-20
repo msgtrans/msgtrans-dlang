@@ -29,7 +29,8 @@ enum int PACKET_HEADER_LENGTH = 16;
 
 enum int MAX_PACKET_SIZE = 4 * 1024 * 1024; // 4M
 
-__gshared uint[] avaliableMessageIds;
+// Used to filter the invalid data
+__gshared uint[] AvaliableMessageIds = [];
 
 /* -------------------------------------------------------------------------- */
 
