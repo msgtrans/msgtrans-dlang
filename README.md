@@ -1,5 +1,5 @@
-# msgtrans-dlang
-MsgTrans for D
+# MsgTrans for DLang
+Message Transport Framework. Based on TCP, WebSocket, UDP transmission protocol.
 
 ## Create a Message Transport Server using msgtrans
 ```D
