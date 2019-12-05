@@ -24,16 +24,12 @@ void main()
     server.addChannel(new WebSocketServerChannel(9002, "/test"));
 
     server.acceptor((TransportContext ctx) {
-        TransportSession session = ctx.session();
         infof("New connection: id=%d", ctx.id());
     });
 
-    server.start(); // .codec(new CustomCodec) // .keepAliveAckTimeout(60.seconds)
+    server.start();
 }
 
-/** 
- * 
- */
 @TransportServer(ServerName)
 @TransportClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor)
@@ -42,26 +38,11 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     @MessageId(MESSAGE.HELLO)
     void hello(TransportContext ctx, MessageBuffer buffer) {
 
-        TransportSession session = ctx.session();
-        // HelloMessage message = unserialize!HelloMessage(cast(const byte[])buffer.data);
-        // WelcomeMessage welcomeMessage = new WelcomeMessage;
-        // welcomeMessage.welcome = "Hello " ~ message.name;
+        HelloMessage message = unserialize!HelloMessage(cast(const byte[])buffer.data);
 
-        // warningf("session %d, message: %s", ctx.id(), welcomeMessage.welcome);
+        WelcomeMessage welcomeMessage = new WelcomeMessage;
+        welcomeMessage.welcome = "Hello " ~ message.name;
 
-        // ctx.send(new MessageBuffer(MESSAGE.WELCOME, cast(ubyte[])serialize(welcomeMessage)));
-
-        warningf("session %d, message: %s", session.id(), buffer.toString());
-
-        // list avaliable sessions
-        SessionManager sessionManager = ctx.sessionManager();
-        
-        foreach (s; sessionManager.getAll()) {
-            tracef("session %d", s.id);
-        }
-
-        // response
-        string welcome = "Hello " ~ cast(string) buffer.data;
-        session.send(MESSAGE.WELCOME, welcome);
+        ctx.session().send(new MessageBuffer(MESSAGE.WELCOME, cast(ubyte[])serialize(welcomeMessage)));
     }
 }

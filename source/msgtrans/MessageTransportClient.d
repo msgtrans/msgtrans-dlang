@@ -37,6 +37,11 @@ class MessageTransportClient : MessageTransport {
         _channel.connect();
         _isConnected = true;
     }
+
+    void send(MessageBuffer buffer)
+    {
+        _channel.send(buffer);
+    }
     
     void send(uint id, ubyte[] msg ) {
         // if(_channel.isConnected()) {

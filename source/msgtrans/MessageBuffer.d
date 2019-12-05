@@ -21,6 +21,11 @@ class MessageBuffer
     uint id;
     ubyte[] data;
 
+    this()
+    {
+        id = 0;
+    }
+
     this(uint id, ubyte[] data) {
         this.id = id;
         this.data = data;

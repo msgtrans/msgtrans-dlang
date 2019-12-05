@@ -7,37 +7,28 @@ import message.HelloMessage;
 import message.WelcomeMessage;
 
 import hunt.logging;
-
-import std.stdio : writeln;
-
-enum string ClientName = "test";
+import hunt.util.Serialize;
 
 void main()
 {
-    MessageTransportClient client = new MessageTransportClient(ClientName);
+    MessageTransportClient client = new MessageTransportClient("test");
 
-    // TCP channel
     client.transport(new TcpClientChannel("127.0.0.1", 9001));
-    // client.transport(new TcpClientChannel("10.1.222.120", 9001));
 
-    // WebSocket channel
-    // client.transport(new WebSocketClientChannel("127.0.0.1", 9002, "/test"));
-    // client.transport(new WebSocketClientChannel("ws://127.0.0.1:9002/test"));
+    auto message = new HelloMessage;
+    message.name = "zoujiaqing";
 
-    // auto message = new HelloMessage;
-    warning("sending message");
-    client.send(MESSAGE.HELLO, "World");
-    warning("waiting for response");
+    auto buffer = new MessageBuffer;
+    buffer.id = MESSAGE.HELLO;
+    buffer.data = cast(ubyte[]) serialize(message);
+
+    client.send(buffer);
 
     getchar();
     client.close();
 }
 
-/** 
- * 
- */
-
-@TransportClient(ClientName)
+@TransportClient("test")
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
     this()
@@ -48,11 +39,8 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     @MessageId(MESSAGE.WELCOME)
     void welcome(TransportContext ctx, MessageBuffer buffer)
     {
-        long msgId = buffer.id;
-        string msg = cast(string) buffer.data;
-        warningf("session %d, message: %s", ctx.session.id(), msg);
+        auto message = unserialize!WelcomeMessage(cast(byte[]) buffer.data);
 
-        // string welcome = "Welcome " ~ msg;
-        // writeln(message.welcome);
+        infof("message: %s", message.welcome);
     }
 }
