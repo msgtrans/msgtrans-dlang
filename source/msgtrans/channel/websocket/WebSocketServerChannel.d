@@ -123,7 +123,8 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
                     }
                     if (_closeHandler !is null)
                     {
-                        _closeHandler(session);
+                      TransportContext context = TransportContext(_sessionManager, session);
+                        _closeHandler(context);
                     }
                 }
 
