@@ -16,9 +16,10 @@ import msgtrans.DefaultSessionManager;
 import msgtrans.channel.TransportSession;
 
 alias AcceptHandler = void delegate(TransportContext);
+alias CloseHandler = void delegate(TransportSession);
 
-/** 
- * 
+/**
+ *
  */
 struct TransportContext {
     private SessionManager _manager;

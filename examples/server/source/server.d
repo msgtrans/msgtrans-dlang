@@ -27,6 +27,10 @@ void main()
         infof("New connection: id=%d", ctx.id());
     });
 
+    server.closer((TransportSession session){
+      infof("connection: id=%d closed", session.id());
+    });
+
     server.start();
 }
 

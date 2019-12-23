@@ -21,8 +21,8 @@ import witchcraft;
 import std.conv;
 import std.range;
 
-/** 
- * 
+/**
+ *
  */
 struct ExecutorInfo {
     private string _id = "";
@@ -54,12 +54,12 @@ struct ExecutorInfo {
         return _methodInfo;
     }
 
-    /** 
-     * 
+    /**
+     *
      * Params:
-     *   session = 
-     *   buffer = 
-     *   args = 
+     *   session =
+     *   buffer =
+     *   args =
      */
     void execute(Args...)(ref TransportContext context, MessageBuffer buffer, Args args) nothrow {
         try {
@@ -79,9 +79,9 @@ struct ExecutorInfo {
             // string msg = cast(string)codec.decode(ubyte[]);
             _methodInfo.invoke(obj, context, buffer);
         } catch (Throwable ex) {
-            warning(ex.msg);
-            version (HUNT_DEBUG)
-                warning(ex);
+            //warning(ex.msg);
+            //version (HUNT_DEBUG)
+            //    warning(ex);
         }
     }
 }

@@ -30,15 +30,16 @@ import std.format;
 import std.uuid;
 
 /**
- * 
+ *
  */
 class TcpServerChannel : ServerChannel {
     private NetServer _server;
     private MessageTransport _messageTransport;
     private SessionManager _sessionManager;
     private AcceptHandler _acceptHandler;
+    private CloseHandler _closeHandler;
     private string _name = typeof(this).stringof;
-    
+
     enum string ChannelSession = "ChannelSession";
 
     private {
@@ -78,7 +79,7 @@ class TcpServerChannel : ServerChannel {
     void set(MessageTransport transport) {
         _messageTransport = transport;
         _sessionManager = transport.sessionManager();
-    }    
+    }
 
     void start() {
         initialize();
@@ -92,6 +93,11 @@ class TcpServerChannel : ServerChannel {
 
     void onAccept(AcceptHandler handler) {
         _acceptHandler = handler;
+    }
+
+    void onClose(CloseHandler handler)
+    {
+        _closeHandler = handler;
     }
 
     private void initialize() {
@@ -119,6 +125,10 @@ class TcpServerChannel : ServerChannel {
                 if(session !is null ) {
                     _sessionManager.remove(session);
                 }
+                if (_closeHandler !is null)
+                {
+                  _closeHandler(session);
+                }
             }
 
             override void messageReceived(Connection connection, Object message) {
@@ -141,9 +151,9 @@ class TcpServerChannel : ServerChannel {
             override void failedAcceptingConnection(int connectionId, Throwable t) {
                 debug warning(t.msg);
             }
-        });     
-        
-        // dfmt on 
+        });
+
+        // dfmt on
     }
 
     private void dispatchMessage(Connection connection, MessageBuffer message) {
@@ -166,7 +176,7 @@ class TcpServerChannel : ServerChannel {
                 session = new TcpTransportSession(_sessionManager.genarateId(), connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
-            } 
+            }
 
             TransportContext context = TransportContext(_sessionManager, session);
             executorInfo.execute(context, message);

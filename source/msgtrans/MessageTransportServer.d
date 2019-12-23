@@ -22,12 +22,13 @@ import hunt.logging.ConsoleLogger;
 
 __gshared MessageTransportServer[string] messageTransportServers;
 
-/** 
- * 
+/**
+ *
  */
 class MessageTransportServer : MessageTransport {
     private string _name;
     private AcceptHandler _acceptHandler;
+    private CloseHandler  _closeHandler;
     private ExecutorInfo[uint] _executors;
 
     private ServerChannel[string] _transportChannel;
@@ -57,6 +58,10 @@ class MessageTransportServer : MessageTransport {
         _acceptHandler = handler;
     }
 
+    void closer(CloseHandler handler) {
+        _closeHandler = handler;
+    }
+
     MessageTransportServer sessionManager(SessionManager manager) {
         _sessionManager = manager;
 
@@ -70,12 +75,13 @@ class MessageTransportServer : MessageTransport {
 
         return _sessionManager;
     }
-    
+
 
     void start() {
         foreach (ServerChannel t; _transportChannel) {
             t.set(this);
             t.onAccept(_acceptHandler);
+            t.onClose(_closeHandler);
             t.start();
         }
     }

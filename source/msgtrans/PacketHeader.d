@@ -15,7 +15,7 @@ module msgtrans.PacketHeader;
 import std.bitmanip;
 import std.format;
 import std.stdint;
-
+import hunt.logging;
 /* -------------------------------------------------------------------------- */
 /*                                  protocol                                  */
 /* -------------------------------------------------------------------------- */
@@ -56,8 +56,8 @@ __gshared uint[] AvaliableMessageIds = [];
 //     LZMA
 // }
 
-/** 
- * 
+/**
+ *
  */
 class PacketHeader
 {
@@ -65,7 +65,7 @@ class PacketHeader
     private
     {
         // Message ID
-        uint _messageID = 0; 
+        uint _messageID = 0;
 
         // Message data length
         uint _messageLength = 0;
@@ -87,7 +87,7 @@ class PacketHeader
         _messageID = id;
         _messageLength = length;
     }
- 
+
     static PacketHeader parse(ubyte[] data)
     {
         // if (data.length < PACKET_HEADER_LENGTH)
@@ -95,13 +95,13 @@ class PacketHeader
         //     return null;
         // }
         // NOTE: Byte ordering is big endian.
-
+        logInfo("ID_FIELD_LENGTH: %d",ID_FIELD_LENGTH);
         ubyte[ID_FIELD_LENGTH] idBytes = data[0..ID_FIELD_LENGTH];
         uint id = bigEndianToNative!(uint)(idBytes);
         if(id == 0) {
             return null;
         }
-        
+
         enum LengthStart = ID_FIELD_LENGTH;
         enum LengthEnd = ID_FIELD_LENGTH + LENGTH_FIELD_LENGTH;
         ubyte[LENGTH_FIELD_LENGTH] lengthBytes = data[LengthStart..LengthEnd];

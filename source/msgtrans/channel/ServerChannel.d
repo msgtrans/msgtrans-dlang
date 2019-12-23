@@ -15,8 +15,8 @@ import msgtrans.MessageTransport;
 // import msgtrans.SessionManager;
 import msgtrans.TransportContext;
 
-/** 
- * 
+/**
+ *
  */
 interface ServerChannel {
     string name();
@@ -30,4 +30,5 @@ interface ServerChannel {
 
     void onAccept(AcceptHandler handler);
 
+    void onClose(CloseHandler handler);
 }

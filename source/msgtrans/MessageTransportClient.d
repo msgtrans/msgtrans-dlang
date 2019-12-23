@@ -18,8 +18,8 @@ import msgtrans.MessageBuffer;
 
 import hunt.logging.ConsoleLogger;
 
-/** 
- * 
+/**
+ *
  */
 class MessageTransportClient : MessageTransport {
     private bool _isConnected = false;
@@ -31,18 +31,21 @@ class MessageTransportClient : MessageTransport {
 
     void transport(ClientChannel channel) {
         assert(channel !is null);
+        try{
+          _channel = channel;
+          _channel.set(this);
+          _channel.connect();
+          _isConnected = true;
+        }catch(Exception e){
 
-        _channel = channel;
-        _channel.set(this);
-        _channel.connect();
-        _isConnected = true;
+        }
     }
 
     void send(MessageBuffer buffer)
     {
         _channel.send(buffer);
     }
-    
+
     void send(uint id, ubyte[] msg ) {
         // if(_channel.isConnected()) {
 
@@ -52,6 +55,10 @@ class MessageTransportClient : MessageTransport {
         _channel.send(new MessageBuffer(id, msg));
     }
 
+    bool isConnected()
+    {
+      return _isConnected;
+    }
     void send(uint id, string msg ) {
         this.send(id, cast(ubyte[]) msg);
     }
