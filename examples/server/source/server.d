@@ -1,9 +1,6 @@
-import hunt.net;
-import hunt.logging;
-
 import msgtrans;
 
-import hunt.util.Serialize;
+import hunt.logging;
 
 enum ServerName = "test";
 enum ClientName = "test";
@@ -24,6 +21,11 @@ void main()
     });
 
     server.start();
+}
+
+enum MESSAGE : uint {
+    HELLO = 10001,
+    WELCOME = 20001
 }
 
 @TransportServer(ServerName)

@@ -1,26 +1,29 @@
-import std.stdio;
-
 import msgtrans;
 
 import hunt.logging;
-import hunt.util.Serialize;
 
 void main()
 {
+    import std.stdio : getchar;
+
     MessageTransportClient client = new MessageTransportClient("test");
 
     client.channel(new TcpClientChannel("127.0.0.1", 9001));
 
     string name = "zoujiaqing";
 
-    auto buffer = new MessageBuffer;
-    buffer.id = MESSAGE.HELLO;
-    buffer.data = name.dup;
+    auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
     client.send(buffer);
 
     getchar();
+
     client.close();
+}
+
+enum MESSAGE : uint {
+    HELLO = 10001,
+    WELCOME = 20001
 }
 
 @TransportClient("test")
