@@ -16,8 +16,8 @@ import msgtrans.MessageTransport;
 
 // import hunt.net;
 
-interface ClientChannel {
-
+interface ClientChannel
+{
     void connect();
 
     bool isConnected();
@@ -27,5 +27,4 @@ interface ClientChannel {
     void send(MessageBuffer buffer);
 
     void close();
-
 }

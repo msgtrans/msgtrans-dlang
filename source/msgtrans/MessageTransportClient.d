@@ -18,27 +18,48 @@ import msgtrans.MessageBuffer;
 
 import hunt.logging.ConsoleLogger;
 
+import core.time;
+
 /**
  *
  */
 class MessageTransportClient : MessageTransport {
     private bool _isConnected = false;
     private ClientChannel _channel;
+    
+    // private Duration _tickPeriod = 10.seconds;
+    // private Duration _ackTimeout = 30.seconds;
+    // private uint _missedAcks = 3;
 
-    this(string name) {
+    this(string name)
+    {
+        if (!name.length)
+        {
+            // Exeption?
+        }
+
         super(CLIENT_NAME_PREFIX ~ name);
     }
 
-    void transport(ClientChannel channel) {
+    MessageTransportClient channel(ClientChannel channel)
+    {
         assert(channel !is null);
-        try{
-          _channel = channel;
+        _channel = channel;
+    }
+
+    bool connect()
+    {
+        assert(_channel !is null);
+
+        try {
           _channel.set(this);
           _channel.connect();
           _isConnected = true;
-        }catch(Exception e){
-
+        } catch(Exception e) {
+            return false;
         }
+
+        return true;
     }
 
     void send(MessageBuffer buffer)

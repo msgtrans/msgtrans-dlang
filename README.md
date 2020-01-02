@@ -22,7 +22,7 @@ void main()
     MessageTransportServer server = new MessageTransportServer("test");
 
     server.addChannel(new TcpServerChannel(9001));
-    server.addChannel(new WebSocketServerChannel(9002, "/test"));
+    server.addChannel(new WebSocketServerChannel(9002, "/ws"));
 
     server.acceptor((TransportContext ctx) {
         infof("New connection: id=%d", ctx.id());
@@ -64,7 +64,7 @@ void main()
 {
     MessageTransportClient client = new MessageTransportClient("test");
 
-    client.transport(new TcpClientChannel("127.0.0.1", 9001));
+    client.channel(new TcpClientChannel("127.0.0.1", 9001)).connect();
 
     auto message = new HelloMessage;
     message.name = "zoujiaqing";
