@@ -1,31 +1,29 @@
-import std.stdio;
-
 import msgtrans;
 
-import message.Constants;
-import message.HelloMessage;
-import message.WelcomeMessage;
-
 import hunt.logging;
-import hunt.util.Serialize;
 
 void main()
 {
+    import std.stdio : getchar;
+
     MessageTransportClient client = new MessageTransportClient("test");
 
-    client.transport(new TcpClientChannel("127.0.0.1", 9001));
+    client.channel(new TcpClientChannel("127.0.0.1", 9001));
 
-    auto message = new HelloMessage;
-    message.name = "zoujiaqing";
+    string name = "zoujiaqing";
 
-    auto buffer = new MessageBuffer;
-    buffer.id = MESSAGE.HELLO;
-    buffer.data = cast(ubyte[]) serialize(message);
+    auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
     client.send(buffer);
 
     getchar();
+
     client.close();
+}
+
+enum MESSAGE : uint {
+    HELLO = 10001,
+    WELCOME = 20001
 }
 
 @TransportClient("test")
@@ -39,8 +37,8 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     @MessageId(MESSAGE.WELCOME)
     void welcome(TransportContext ctx, MessageBuffer buffer)
     {
-        auto message = unserialize!WelcomeMessage(cast(byte[]) buffer.data);
+        auto welcomeText = cast(string) buffer.data;
 
-        infof("message: %s", message.welcome);
+        infof("message: %s", welcomeText);
     }
 }
