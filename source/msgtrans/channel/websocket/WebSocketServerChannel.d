@@ -106,7 +106,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
                 override void onOpen(WebSocketConnection connection) {
                     version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());
                     WebsocketTransportSession session =
-                        new WebsocketTransportSession(_sessionManager.genarateId(), connection);
+                        new WebsocketTransportSession(_sessionManager.generateId(), connection);
                     connection.setAttribute(ChannelSession, session);
                     _sessionManager.add(session);
                     TransportContext context = TransportContext(_sessionManager, session);
@@ -166,7 +166,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
         } else {
             WebsocketTransportSession session = cast(WebsocketTransportSession)connection.getAttribute(ChannelSession);
             if(session is null ){
-                session = new WebsocketTransportSession(_sessionManager.genarateId(), connection);
+                session = new WebsocketTransportSession(_sessionManager.generateId(), connection);
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
             }

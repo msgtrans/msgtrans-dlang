@@ -21,8 +21,8 @@ import hunt.String;
 import std.stdio;
 import std.array;
 
-/** 
- * 
+/**
+ *
  */
 class TcpTransportSession : TransportSession {
     private Connection _conn = null;
@@ -50,6 +50,7 @@ class TcpTransportSession : TransportSession {
             ubyte[][] buffers = Packet.encode(message);
             foreach(ubyte[] data; buffers) {
                 _conn.write(data);
+                writefln("data : %s",data);
             }
         }
     }

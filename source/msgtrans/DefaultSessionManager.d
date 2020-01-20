@@ -34,8 +34,8 @@ ulong nextClientSessionId() {
     return atomicOp!("+=")(_clientSessionId, 1);
 }
 
-/** 
- * 
+/**
+ *
  */
 class DefaultSessionManager : SessionManager {
     private shared ulong _serverSessionId = 0;
@@ -49,7 +49,7 @@ class DefaultSessionManager : SessionManager {
         _locker = new Mutex();
     }
 
-    ulong genarateId() {
+    ulong generateId() {
         return atomicOp!("+=")(_serverSessionId, 1);
     }
 
