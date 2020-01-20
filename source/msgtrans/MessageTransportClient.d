@@ -26,7 +26,7 @@ import core.time;
 class MessageTransportClient : MessageTransport {
     private bool _isConnected = false;
     private ClientChannel _channel;
-    
+
     // private Duration _tickPeriod = 10.seconds;
     // private Duration _ackTimeout = 30.seconds;
     // private uint _missedAcks = 3;
@@ -45,6 +45,7 @@ class MessageTransportClient : MessageTransport {
     {
         assert(channel !is null);
         _channel = channel;
+        return this;
     }
 
     bool connect()
