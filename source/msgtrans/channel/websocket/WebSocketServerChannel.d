@@ -22,7 +22,7 @@ import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
 
-import hunt.collection.ByteBuffer;
+import hunt.io.ByteBuffer;
 import hunt.http.server;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
@@ -101,7 +101,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
         _server = HttpServer.builder()
             // .setTLS("cert/server.crt", "cert/server.key", "hunt2018", "hunt2018")
             .setListener(_port, _host)
-            .registerWebSocket(_path, new class AbstractWebSocketMessageHandler {
+            .websocket(_path, new class AbstractWebSocketMessageHandler {
 
                 override void onOpen(WebSocketConnection connection) {
                     version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());

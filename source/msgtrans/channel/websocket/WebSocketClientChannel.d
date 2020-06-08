@@ -22,7 +22,7 @@ import msgtrans.channel.TransportSession;
 import msgtrans.channel.websocket.WebSocketChannel;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 
-import hunt.collection.ByteBuffer;
+import hunt.io.ByteBuffer;
 import hunt.Exceptions;
 import hunt.http.client;
 import hunt.logging.ConsoleLogger;

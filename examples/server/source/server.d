@@ -5,12 +5,15 @@ import hunt.logging;
 enum ServerName = "test";
 enum ClientName = "test";
 
+enum TcpChannelPort = 9101;
+enum WsChannelPort = 9102;
+
 void main()
 {
     MessageTransportServer server = new MessageTransportServer(ServerName);
 
-    server.addChannel(new TcpServerChannel(9001));
-    server.addChannel(new WebSocketServerChannel(9002, "/ws"));
+    server.addChannel(new TcpServerChannel(TcpChannelPort));
+    server.addChannel(new WebSocketServerChannel(WsChannelPort, "/ws"));
 
     server.acceptor((TransportContext ctx) {
         infof("New connection: id=%d", ctx.id());
@@ -37,9 +40,8 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     void hello(TransportContext ctx, MessageBuffer buffer) {
 
         string name = cast(string) buffer.data;
+        string welcomeText = "Hello " ~ name;
 
-        WelcomeMessage welcomeText = "Hello " ~ name;
-
-        ctx.session().send(new MessageBuffer(MESSAGE.WELCOME, welcomeText.dup));
+        ctx.session().send(new MessageBuffer(MESSAGE.WELCOME, welcomeText));
     }
 }

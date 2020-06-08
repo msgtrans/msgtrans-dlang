@@ -14,8 +14,8 @@ module msgtrans.channel.tcp.TcpDecoder;
 import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 
-import hunt.collection.ByteBuffer;
-import hunt.collection.BufferUtils;
+import hunt.io.ByteBuffer;
+import hunt.io.BufferUtils;
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
 import hunt.net;

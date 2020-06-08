@@ -16,7 +16,7 @@ import msgtrans.PacketParser;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.websocket.WebSocketTransportSession;
 
-import hunt.collection.ByteBuffer;
+import hunt.io.ByteBuffer;
 import hunt.http.server;
 import hunt.logging.ConsoleLogger;
 import hunt.net;

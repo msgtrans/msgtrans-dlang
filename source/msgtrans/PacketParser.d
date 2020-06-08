@@ -11,8 +11,8 @@
 
 module msgtrans.PacketParser;
 
-import hunt.collection.ByteBuffer;
-import hunt.collection.BufferUtils;
+import hunt.io.ByteBuffer;
+import hunt.io.BufferUtils;
 import hunt.collection.List;
 import hunt.collection.ArrayList;
 

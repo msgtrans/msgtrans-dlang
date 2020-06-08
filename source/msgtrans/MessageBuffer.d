@@ -16,14 +16,17 @@ import std.format;
 /** 
  * 
  */
-class MessageBuffer
-{
+class MessageBuffer {
     uint id;
     ubyte[] data;
 
-    this()
-    {
+    this() {
         id = 0;
+    }
+
+    this(uint id, string data) {
+        this.id = id;
+        this.data = cast(ubyte[])data.dup;
     }
 
     this(uint id, ubyte[] data) {

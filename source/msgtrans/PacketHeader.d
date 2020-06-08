@@ -95,7 +95,7 @@ class PacketHeader
         //     return null;
         // }
         // NOTE: Byte ordering is big endian.
-        logInfo("ID_FIELD_LENGTH: %d",ID_FIELD_LENGTH);
+        version(HUNT_MSG_DEBUG) logInfof("ID_FIELD_LENGTH: %d",ID_FIELD_LENGTH);
         ubyte[ID_FIELD_LENGTH] idBytes = data[0..ID_FIELD_LENGTH];
         uint id = bigEndianToNative!(uint)(idBytes);
         if(id == 0) {

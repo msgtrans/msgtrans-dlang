@@ -31,44 +31,41 @@ class MessageTransportClient : MessageTransport {
     // private Duration _ackTimeout = 30.seconds;
     // private uint _missedAcks = 3;
 
-    this(string name)
-    {
-        if (!name.length)
-        {
+    this(string name) {
+        if (!name.length) {
             // Exeption?
         }
 
         super(CLIENT_NAME_PREFIX ~ name);
     }
 
-    MessageTransportClient channel(ClientChannel channel)
-    {
-        assert(channel !is null);
+    MessageTransportClient channel(ClientChannel channel) {
+        assert(channel !is null, "The channel can't be null.");
         _channel = channel;
+        connect();
         return this;
     }
 
-    bool connect()
-    {
-        assert(_channel !is null);
+    bool connect() {
+        assert(_channel !is null, "The channel is not set.");
 
         try {
-          _channel.set(this);
-          _channel.connect();
-          _isConnected = true;
-        } catch(Exception e) {
+            _channel.set(this);
+            _channel.connect();
+            _isConnected = true;
+        } catch (Exception e) {
             return false;
         }
 
         return true;
     }
 
-    void send(MessageBuffer buffer)
-    {
+    void send(MessageBuffer buffer) {
         _channel.send(buffer);
     }
 
-    void send(uint id, ubyte[] msg ) {
+    void send(uint id, ubyte[] msg) {
+        assert(_channel !is null, "The channel is not set.");
         // if(_channel.isConnected()) {
 
         // } else {
@@ -77,11 +74,11 @@ class MessageTransportClient : MessageTransport {
         _channel.send(new MessageBuffer(id, msg));
     }
 
-    bool isConnected()
-    {
-      return _isConnected;
+    bool isConnected() {
+        return _isConnected;
     }
-    void send(uint id, string msg ) {
+
+    void send(uint id, string msg) {
         this.send(id, cast(ubyte[]) msg);
     }
 

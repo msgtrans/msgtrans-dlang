@@ -2,26 +2,29 @@ import msgtrans;
 
 import hunt.logging;
 
+enum Host = "127.0.0.1";
+enum TcpChannelPort = 9101;
+enum WsChannelPort = 9102;
+
 void main()
 {
     import std.stdio : getchar;
 
     MessageTransportClient client = new MessageTransportClient("test");
 
-    client.channel(new TcpClientChannel("127.0.0.1", 9001));
+    client.channel(new TcpClientChannel(Host, TcpChannelPort));
 
     string name = "zoujiaqing";
-
     auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
     client.send(buffer);
-
     getchar();
 
     client.close();
 }
 
-enum MESSAGE : uint {
+enum MESSAGE : uint
+{
     HELLO = 10001,
     WELCOME = 20001
 }
