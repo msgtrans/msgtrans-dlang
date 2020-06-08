@@ -1,7 +1,7 @@
 {
     "name": "msgtrans",
     "description": "Message Transport Framework. Based on TCP, WebSocket, UDP transmission protocol.",
-    "copyright": "Copyright (c) 2017-2019, HuntLabs",
+    "copyright": "Copyright (c) 2017-2020, HuntLabs",
     "homepage": "http://www.huntlabs.net",
     "license": "Apache-2.0",
     "dependencies": {
