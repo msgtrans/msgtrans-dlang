@@ -18,16 +18,20 @@ import msgtrans.channel.ServerChannel;
 import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
-
+import msgtrans.MessageTransportServer;
 import msgtrans.MessageBuffer;
 import msgtrans.executor;
-
+import msgtrans.ee2e.message.MsgDefine;
+import msgtrans.ee2e.crypto;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
 import hunt.net.codec.Codec;
-
+import google.protobuf;
+import std.array;
+import msgtrans.ee2e.common;
 import std.format;
 import std.uuid;
+import std.base64;
 
 /**
  *
@@ -167,6 +171,13 @@ class TcpServerChannel : ServerChannel {
         // tx: 00 00 4E 21 00 00 00 0B 00 00 00 00 00 00 00 00 48 65 6C 6C 6F 20 57 6F 72 6C 64
 
         uint messageId = message.id;
+        if (messageId == MESSAGE.INITIATE || messageId == MESSAGE.FINALIZE)
+        {
+            keyExchangeRequest(message,connection);
+            return;
+        }
+
+       // string str = format("data received: %s", message.toString());
         ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
         if (executorInfo == ExecutorInfo.init) {
             warning("No Executor found for id: ", messageId);
@@ -178,9 +189,80 @@ class TcpServerChannel : ServerChannel {
                 connection.setAttribute(ChannelSession, session);
                 _sessionManager.add(session);
             }
-
             TransportContext context = TransportContext(_sessionManager, session);
+            if (MessageTransportServer.isEE2E)
+            {
+                peerkey_s peerkeys = cast(peerkey_s)(context.session().getAttribute("EE2E"));
+                if(peerkeys !is null)
+                {
+                    message = common.encrypted_decode(message,peerkeys);
+                    if(message is null)
+                    {
+                        connection.close();
+                    }
+                }else
+                {
+                    logError("peerkeys is null");
+                }
+            }
             executorInfo.execute(context, message);
         }
+    }
+
+    private void keyExchangeRequest(MessageBuffer message, Connection connection)
+    {
+        TcpTransportSession session = cast(TcpTransportSession) connection.getAttribute(
+        ChannelSession);
+        if (session is null) {
+          session = new TcpTransportSession(_sessionManager.generateId(), connection);
+          connection.setAttribute(ChannelSession, session);
+          _sessionManager.add(session);
+        }
+        TransportContext context = TransportContext(_sessionManager, session);
+
+        switch(message.id)
+        {
+            case MESSAGE.INITIATE :
+            {
+                KeyExchangeRequest keyExchangeRes = new KeyExchangeRequest;
+                message.data.fromProtobuf!KeyExchangeRequest(keyExchangeRes);
+
+                //logInfo("%s",keyExchangeRes.key_info.ec_public_key_65bytes);
+
+                peerkey_s peerkeys = new peerkey_s;
+                peerkeys.ec_pub_key = Base64.decode(keyExchangeRes.key_info.ec_public_key_65bytes);
+                peerkeys.salt = Base64.decode(keyExchangeRes.key_info.salt_32bytes);
+                context.session().setAttribute("EE2E",peerkeys);
+                logInfo("client pub : %s" ,peerkeys.ec_pub_key );
+                logInfo("client salt : %s" , peerkeys.salt);
+
+
+                KeyExchangeRequest res = new KeyExchangeRequest;
+                KeyInfo info = new KeyInfo;
+                info.ec_public_key_65bytes = Base64.encode(MessageTransportServer.s_server_key.ec_pub_key);
+                info.salt_32bytes = Base64.encode(MessageTransportServer.s_server_key.salt);
+                res.key_info = info;
+                logInfo("server pub : %s" ,res.key_info.ec_public_key_65bytes );
+                logInfo("server salt : %s" , res.key_info.salt_32bytes);
+
+                context.session().send(new MessageBuffer(MESSAGE.INITIATE, res.toProtobuf.array));
+                break;
+            }
+            case MESSAGE.FINALIZE :
+            {
+                peerkey_s peerkeys  =  cast(peerkey_s)(context.session().getAttribute("EE2E"));
+                if (peerkeys !is null && common.keyCalculate(MessageTransportServer.s_server_key, peerkeys))
+                {
+                    context.session().send(new MessageBuffer(MESSAGE.FINALIZE, []));
+                }else
+                {
+                    logError("peerkeys is null");
+                }
+                break;
+            }
+            default: break;
+        }
+
+
     }
 }

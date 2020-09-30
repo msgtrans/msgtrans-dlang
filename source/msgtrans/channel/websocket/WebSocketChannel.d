@@ -25,18 +25,18 @@ import hunt.util.DateTime;
 import std.format;
 import std.stdio;
 
-/** 
- * 
+/**
+ *
  */
 abstract class WebSocketChannel {
-    
+
     /** The default maximum buffer length. Default to 128 chars. */
     private int bufferLength = 128;
 
     /** The default maximum Line length. Default to 1024. */
     private int maxLineLength = 8*1024;
 
-    protected void decode(WebSocketConnection connection, ByteBuffer buf) { 
+    protected void decode(WebSocketConnection connection, ByteBuffer buf) {
         PacketParser parser = getParser(connection);
 
         MessageBuffer[] msgBuffers = parser.parse(buf);
@@ -48,7 +48,7 @@ abstract class WebSocketChannel {
         foreach(MessageBuffer msg; msgBuffers) {
             dispatchMessage(connection, msg);
         }
-    } 
+    }
 
     protected PacketParser getParser(WebSocketConnection connection) {
         enum string PARSER = "PacketParser";

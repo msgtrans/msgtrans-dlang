@@ -37,8 +37,8 @@ class TcpDecoder : DecoderChain {
     this() {
         super(null);
     }
-    
-    
+
+
     /**
      * @return the allowed maximum size of the line to be decoded.
      * If the size of the line to be decoded exceeds this value, the
@@ -54,12 +54,12 @@ class TcpDecoder : DecoderChain {
      * If the size of the line to be decoded exceeds this value, the
      * decoder will throw a {@link BufferDataException}.  The default
      * value is <tt>1024</tt> (1KB).
-     * 
+     *
      * @param maxLineLength The maximum line length
      */
     void setMaxLineLength(int maxLineLength) {
         if (maxLineLength <= 0) {
-            throw new IllegalArgumentException("maxLineLength (" ~ 
+            throw new IllegalArgumentException("maxLineLength (" ~
                 maxLineLength.to!string() ~ ") should be a positive value");
         }
 
@@ -74,7 +74,7 @@ class TcpDecoder : DecoderChain {
      */
     void setBufferLength(int bufferLength) {
         if (bufferLength <= 0) {
-            throw new IllegalArgumentException("bufferLength (" ~ 
+            throw new IllegalArgumentException("bufferLength (" ~
                 maxLineLength.to!string() ~ ") should be a positive value");
 
         }
@@ -91,7 +91,7 @@ class TcpDecoder : DecoderChain {
     }
 
     override
-    void decode(ByteBuffer buf, Connection connection) { 
+    void decode(ByteBuffer buf, Connection connection) {
         version(HUNT_MESSAGE_DEBUG) tracef("connection %d: %s", connection.getId(), buf.toString());
         PacketParser parser = getParser(connection);
 
@@ -111,7 +111,7 @@ class TcpDecoder : DecoderChain {
             handler.messageReceived(connection, msg);
         }
 
-    } 
+    }
 
     private PacketParser getParser(Connection connection) {
         PacketParser ctx;

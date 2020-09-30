@@ -25,14 +25,14 @@ import msgtrans.PacketHeader;
 import std.algorithm : max, canFind;
 
 
-/** 
- * 
+/**
+ *
  */
 class PacketParser {
     private ByteBuffer _receivedPacketBuf;
     private size_t _defaultBufferSize = 8*1024;
 
-    this(size_t bufferSize = 8*1024) {     
+    this(size_t bufferSize = 8*1024) {
         _defaultBufferSize = bufferSize;
     }
 
@@ -53,7 +53,7 @@ class PacketParser {
                 _receivedPacketBuf = ret;
             } else {
                 version(HUNT_MESSAGE_DEBUG) {
-                    tracef("buffering data: %s, bytes, current buffer: %s", 
+                    tracef("buffering data: %s, bytes, current buffer: %s",
                         now.toString(), _receivedPacketBuf.toString());
                 }
 
@@ -67,7 +67,7 @@ class PacketParser {
                 }
             }
         }
-        version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());        
+        version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
     }
 
     protected ByteBuffer newBuffer(int size) {
@@ -80,12 +80,13 @@ class PacketParser {
 
         version(HUNT_DEBUG) tracef("incoming buffer: %s", buffer);
         mergeBuffer(buffer);
-        
+
         MessageBuffer[] resultBuffers;
         size_t dataStart = 0;
 
         while (_receivedPacketBuf.remaining() >= PACKET_HEADER_LENGTH) {
             ubyte[] data = cast(ubyte[])_receivedPacketBuf.getRemaining();
+            //infof("rev buff: %s ----- %d",data, data.length);
             PacketHeader header = PacketHeader.parse(data);
             if(header is null) {
                 warning("corrupted data");
@@ -104,7 +105,7 @@ class PacketParser {
 
             } else if(AvaliableMessageIds.length>0 && !AvaliableMessageIds.canFind(header.messageId())) {
                 warningf("Unrecognized packet: %s", header.toString());
-                _receivedPacketBuf.clear().flip(); 
+                _receivedPacketBuf.clear().flip();
                 return null;
             }
 
@@ -123,13 +124,13 @@ class PacketParser {
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
             _receivedPacketBuf.nextGetIndex(cast(int)currentFrameSize);
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
-        } 
-        
-        int remaining = _receivedPacketBuf.remaining(); 
+        }
+
+        int remaining = _receivedPacketBuf.remaining();
         version(HUNT_MESSAGE_DEBUG) {
             tracef("remaining: %d, buffer: %s", remaining, _receivedPacketBuf.toString());
         }
-        
+
         if(remaining > 0) {
             byte[] data = cast(byte[])_receivedPacketBuf.getRemaining();
             size_t newLength = max(remaining, _defaultBufferSize);
@@ -149,7 +150,7 @@ class PacketParser {
         } else {
             _receivedPacketBuf = null;
         }
-        
+
         return resultBuffers;
     }
 }

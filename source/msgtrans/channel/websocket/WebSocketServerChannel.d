@@ -99,9 +99,10 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
 
     private void initialize() {
         _server = HttpServer.builder()
-            // .setTLS("cert/server.crt", "cert/server.key", "hunt2018", "hunt2018")
+            // .setTLS("cert/server.crt", "cert/server.key", "hunt2018", "hunt2018") //websocket
             .setListener(_port, _host)
             .websocket(_path, new class AbstractWebSocketMessageHandler {
+            //.registerWebSocket(_path, new class AbstractWebSocketMessageHandler {
 
                 override void onOpen(WebSocketConnection connection) {
                     version(HUNT_DEBUG) infof("New connection from: %s", connection.getRemoteAddress());
