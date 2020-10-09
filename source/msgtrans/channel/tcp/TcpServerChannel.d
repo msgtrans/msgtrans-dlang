@@ -32,6 +32,7 @@ import msgtrans.ee2e.common;
 import std.format;
 import std.uuid;
 import std.base64;
+import core.time;
 
 /**
  *
@@ -58,7 +59,10 @@ class TcpServerChannel : ServerChannel {
     }
 
     this(string host, ushort port) {
-        this(host, port, new NetServerOptions());
+        auto option = new NetServerOptions();
+        option.setTcpKeepAlive(true);
+        option.setKeepaliveWaitTime(60.seconds);
+        this(host, port, option);
     }
 
     this(string host, ushort port, NetServerOptions options) {
