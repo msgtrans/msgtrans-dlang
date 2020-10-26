@@ -115,10 +115,11 @@ class PacketParser {
             if (data.length < currentFrameSize) {
                 // No enough data for a full frame, so save the remaining
                 break;
-            } else if(data.length > MAX_PACKET_SIZE) {
-                warningf("Out of packet size (<= %d): %d", MAX_PACKET_SIZE, currentFrameSize);
-                return null;
             }
+            //else if(data.length > MAX_PACKET_SIZE) {
+            //    warningf("Out of packet size (<= %d): %d", MAX_PACKET_SIZE, currentFrameSize);
+            //    return null;
+            //}
 
             resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH..currentFrameSize]);
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
