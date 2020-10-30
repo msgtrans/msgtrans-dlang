@@ -13,9 +13,10 @@ module msgtrans.Packet;
 
 import msgtrans.MessageBuffer;
 import msgtrans.PacketHeader;
-
-/** 
- * 
+import hunt.logging;
+import std.bitmanip;
+/**
+ *
  */
 class Packet
 {
@@ -27,12 +28,24 @@ class Packet
     // }
 
     static ubyte[][] encode(MessageBuffer message) {
-        ubyte[] header = PacketHeader.encode(message.id, cast(uint)message.data.length);
-        if(message.data.length < 1024) {
+        ubyte[] header = PacketHeader.encode(message);
+        if (message.extendLength > 0)
+        {
+            ubyte[4] extend = nativeToBigEndian(message.tagId);
+            if(message.data.length < 1024) {
+              return [header ~ extend.dup ~ message.data];
+            } else {
+              return [header , extend.dup, message.data];
+            }
+        }else
+        {
+          if(message.data.length < 1024) {
             return [header ~ message.data];
-        } else {
-            return [header, message.data];
+          } else {
+            return [header ,message.data];
+          }
         }
+
     }
 
     // static MessageBuffer decode(ubyte[] data)

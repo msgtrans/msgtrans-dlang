@@ -21,7 +21,7 @@ import hunt.util.Serialize;
 
 import msgtrans.MessageBuffer;
 import msgtrans.PacketHeader;
-
+import std.bitmanip;
 import std.algorithm : max, canFind;
 
 
@@ -111,7 +111,7 @@ class PacketParser {
 
             version(HUNT_DEBUG) infof("packet header, %s", header.toString());
 
-            size_t currentFrameSize = header.messageLength + PACKET_HEADER_LENGTH;
+            size_t currentFrameSize = header.messageLength + header.extendLength() + PACKET_HEADER_LENGTH;
             if (data.length < currentFrameSize) {
                 // No enough data for a full frame, so save the remaining
                 break;
@@ -120,8 +120,18 @@ class PacketParser {
             //    warningf("Out of packet size (<= %d): %d", MAX_PACKET_SIZE, currentFrameSize);
             //    return null;
             //}
+            if (header.extendLength() > 0)
+            {
 
-            resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH..currentFrameSize]);
+                ubyte[EXTENSION_FIELD_LENGTH] d = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + cast(int)(header.extendLength())];
+                uint tagId = bigEndianToNative!uint(d);
+                logInfof("extendLength : %s ---  %s" , header.extendLength(),tagId);
+                resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , tagId);
+            }else
+            {
+                resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH..currentFrameSize]);
+            }
+
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());
             _receivedPacketBuf.nextGetIndex(cast(int)currentFrameSize);
             version(HUNT_MESSAGE_DEBUG) trace(_receivedPacketBuf.toString());

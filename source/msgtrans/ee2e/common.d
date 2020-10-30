@@ -155,11 +155,18 @@ class common {
       encrypted_request.token = token;
       encrypted_request.ciphertext = ciphertext;
       logInfo("encrypted_request %s",encrypted_request.toProtobuf.array);
-      return new MessageBuffer(message.id , encrypted_request.toProtobuf.array);
+      if (message.extendLength > 0)
+      {
+        return new MessageBuffer(message.id , encrypted_request.toProtobuf.array, message.tagId);
+      }else
+      {
+        return new MessageBuffer(message.id , encrypted_request.toProtobuf.array);
+      }
   }
 
   static MessageBuffer encrypted_decode(MessageBuffer message, peerkey_s peer_key, bool isClient = false)
   {
+      logInfo("encrypted_decode id: %s" ,message.id);
       EncryptedRequest encrypted_request = new EncryptedRequest;
       message.data.fromProtobuf!EncryptedRequest(encrypted_request);
 
@@ -210,8 +217,13 @@ class common {
       logInfo("peer_key.aes_key.ptr  %s" ,peer_key.aes_key);
 
 
-
-      return new MessageBuffer(message.id , plaintext);
+      if (message.extendLength > 0 )
+      {
+        return new MessageBuffer(message.id , plaintext,message.tagId);
+      }else
+      {
+        return new MessageBuffer(message.id , plaintext);
+      }
 
   }
 
