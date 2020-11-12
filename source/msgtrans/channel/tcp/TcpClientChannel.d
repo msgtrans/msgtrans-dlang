@@ -50,7 +50,7 @@ class TcpClientChannel : ClientChannel {
     private NetClient _client;
     private NetClientOptions _options;
     private Connection _connection;
-
+    private CloseHandler _closeHandler;
     private Mutex _connectLocker;
     private Condition _connectCondition;
 
@@ -70,6 +70,10 @@ class TcpClientChannel : ClientChannel {
         _messageTransport = transport;
     }
 
+    void onClose(CloseHandler handler)
+    {
+      _closeHandler = handler;
+    }
 
     void keyExchangeInitiate()
     {
@@ -111,7 +115,11 @@ class TcpClientChannel : ClientChannel {
             override void connectionClosed(Connection connection) {
                 version(HUNT_DEBUG) infof("Connection closed: %s", connection.getRemoteAddress());
                 _connection = null;
-
+                if(_closeHandler !is null)
+                {
+                  TransportContext t;
+                  _closeHandler(t);
+                }
                 // client.close();
             }
 
@@ -220,9 +228,9 @@ class TcpClientChannel : ClientChannel {
             _connectLocker.unlock();
         }
 
-        if(_client !is null) {
-            return;
-        }
+        //if(_client !is null) {
+        //    return;
+        //}
 
         initialize();
 

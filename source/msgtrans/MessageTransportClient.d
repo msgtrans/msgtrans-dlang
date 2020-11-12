@@ -17,7 +17,7 @@ import msgtrans.MessageTransport;
 import msgtrans.MessageBuffer;
 import msgtrans.ee2e.crypto;
 import hunt.logging.ConsoleLogger;
-
+import msgtrans.TransportContext;
 import core.time;
 
 /**
@@ -29,7 +29,7 @@ class MessageTransportClient : MessageTransport {
     __gshared bool isEE2E;
     __gshared ownkey_s  client_key;
     __gshared peerkey_s server_key;
-
+    private CloseHandler  _closeHandler;
     shared static this()
     {
         client_key = new ownkey_s;
@@ -66,6 +66,10 @@ class MessageTransportClient : MessageTransport {
         super(CLIENT_NAME_PREFIX ~ name);
     }
 
+    void closer(CloseHandler handler) {
+      _closeHandler = handler;
+    }
+
     MessageTransportClient channel(ClientChannel channel)
     {
         assert(channel !is null);
@@ -80,6 +84,7 @@ class MessageTransportClient : MessageTransport {
         try {
           _channel.set(this);
           _channel.connect();
+          _channel.onClose(_closeHandler);
           _isConnected = true;
         } catch(Exception e) {
             return false;
@@ -113,4 +118,14 @@ class MessageTransportClient : MessageTransport {
     void close() {
         _channel.close();
     }
+
+  bool isClosed()
+  {
+    bool c = !_channel.isConnected;
+    if(c)
+    {
+      _isConnected = false;
+    }
+    return c;
+  }
 }

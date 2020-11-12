@@ -107,6 +107,12 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
 
     }
 
+
+   void onClose(CloseHandler handler)
+   {
+
+   }
+
     bool isConnected() {
         return _connection !is null && _connection.getTcpConnection().isConnected();
     }
