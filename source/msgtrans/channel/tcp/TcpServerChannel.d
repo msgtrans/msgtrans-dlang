@@ -203,6 +203,7 @@ class TcpServerChannel : ServerChannel {
                     if(message is null)
                     {
                         connection.close();
+                        return;
                     }
                 }else
                 {
