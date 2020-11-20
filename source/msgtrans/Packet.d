@@ -15,6 +15,7 @@ import msgtrans.MessageBuffer;
 import msgtrans.PacketHeader;
 import hunt.logging;
 import std.bitmanip;
+import core.stdc.string;
 /**
  *
  */
@@ -29,14 +30,34 @@ class Packet
 
     static ubyte[][] encode(MessageBuffer message) {
         ubyte[] header = PacketHeader.encode(message);
-        if (message.extendLength > 0)
+        if (message.hasExtend )
         {
-            ubyte[4] extend = nativeToBigEndian(message.tagId);
+            ubyte[Extend.sizeof] extend ;
+            memcpy(extend.ptr,&message.extend,Extend.sizeof);
             if(message.data.length < 1024) {
               return [header ~ extend.dup ~ message.data];
             } else {
               return [header , extend.dup, message.data];
             }
+            //if(message.extendLength == uint.sizeof)
+            //{
+            //  ubyte[4] extend = nativeToBigEndian(message.tagId);
+            //  if(message.data.length < 1024) {
+            //    return [header ~ extend.dup ~ message.data];
+            //  } else {
+            //    return [header , extend.dup, message.data];
+            //  }
+            //}else
+            //{
+            //  ubyte[4] extend1 = nativeToBigEndian(message.tagId);
+            //  ubyte[4] extend2 = nativeToBigEndian(message.clientId);
+            //  if(message.data.length < 1024) {
+            //    return [header ~ extend1.dup ~ extend2.dup ~ message.data];
+            //  } else {
+            //    return [header , extend1.dup, extend2.dup,message.data];
+            //  }
+            //}
+
         }else
         {
           if(message.data.length < 1024) {

@@ -126,7 +126,15 @@ class PacketHeader
         ubyte[ID_FIELD_LENGTH] h0 = nativeToBigEndian(message.id);
         ubyte[LENGTH_FIELD_LENGTH] h1 = nativeToBigEndian(cast(int)(message.data.length));
         ubyte[COMPRESSION_FIELD_LENGTH] h2 = message.compression;
-        ubyte[EXTENSION_FIELD_LENGTH] h3 = nativeToBigEndian(message.extendLength);
+        ubyte[EXTENSION_FIELD_LENGTH] h3;
+        if (message.hasExtend)
+        {
+          h3 = nativeToBigEndian(cast(int)Extend.sizeof);
+        }else
+        {
+          h3 = nativeToBigEndian(0);
+        }
+
 
         ubyte[] buffer = new ubyte[PACKET_HEADER_LENGTH];
         buffer[0..ID_FIELD_LENGTH] = h0[];

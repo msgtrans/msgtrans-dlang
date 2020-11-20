@@ -122,11 +122,25 @@ class PacketParser {
             //}
             if (header.extendLength() > 0)
             {
-
-                ubyte[EXTENSION_FIELD_LENGTH] d = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + cast(int)(header.extendLength())];
-                uint tagId = bigEndianToNative!uint(d);
-                logInfof("extendLength : %s ---  %s" , header.extendLength(),tagId);
-                resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , tagId);
+                //if(header.extendLength() == uint.sizeof)
+                //{
+                  ubyte[Extend.sizeof] d = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + cast(int)(header.extendLength())];
+                  //ubyte[Extend.sizeof] d
+                  //uint tagId = bigEndianToNative!uint(d);
+                  Extend extend  = cast(Extend)d;
+                  logInfof("Extend : %s ---  %s -----%s" , header.extendLength(),extend.tagId, extend.userId);
+                  resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , extend);
+                //}
+                //else
+                //{
+                //  ubyte[EXTENSION_FIELD_LENGTH] d1 = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + uint.sizeof];
+                //  uint tagId = bigEndianToNative!uint(d1);
+                //  ubyte[EXTENSION_FIELD_LENGTH] d2 = data[PACKET_HEADER_LENGTH + uint.sizeof .. PACKET_HEADER_LENGTH + uint.sizeof + uint.sizeof];
+                //  uint clientId = bigEndianToNative!uint(d2);
+                //  logInfof("tagId : %s" , tagId);
+                //  logInfof("clientId : %s" , clientId);
+                //  resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , tagId ,clientId);
+                //}
             }else
             {
                 resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH..currentFrameSize]);

@@ -155,9 +155,9 @@ class common {
       encrypted_request.token = token;
       encrypted_request.ciphertext = ciphertext;
       logInfo("encrypted_request %s",encrypted_request.toProtobuf.array);
-      if (message.extendLength > 0)
+      if (message.hasExtend)
       {
-        return new MessageBuffer(message.id , encrypted_request.toProtobuf.array, message.tagId);
+        return new MessageBuffer(message.id , encrypted_request.toProtobuf.array, message.extend);
       }else
       {
         return new MessageBuffer(message.id , encrypted_request.toProtobuf.array);
@@ -217,9 +217,9 @@ class common {
       logInfo("peer_key.aes_key.ptr  %s" ,peer_key.aes_key);
 
 
-      if (message.extendLength > 0 )
+      if (message.hasExtend)
       {
-        return new MessageBuffer(message.id , plaintext,message.tagId);
+        return new MessageBuffer(message.id , plaintext,message.extend);
       }else
       {
         return new MessageBuffer(message.id , plaintext);
