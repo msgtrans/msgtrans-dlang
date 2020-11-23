@@ -32,12 +32,12 @@ class Packet
         ubyte[] header = PacketHeader.encode(message);
         if (message.hasExtend )
         {
-            ubyte[Extend.sizeof] extend ;
-            memcpy(extend.ptr,&message.extend,Extend.sizeof);
+            //ubyte[Extend.sizeof] extend ;
+            //memcpy(extend.ptr,&message.extend,Extend.sizeof);
             if(message.data.length < 1024) {
-              return [header ~ extend.dup ~ message.data];
+              return [header ~ message.extend.dup ~ message.data];
             } else {
-              return [header , extend.dup, message.data];
+              return [header , message.extend.dup, message.data];
             }
             //if(message.extendLength == uint.sizeof)
             //{

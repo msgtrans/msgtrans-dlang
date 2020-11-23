@@ -18,22 +18,15 @@ import std.bitmanip;
  *
  */
 
-struct Extend
-{
-   uint tagId;
-   uint userIp;
-   uint userId;
-}
+
 
 class MessageBuffer
 {
     uint id;
     ubyte compression;
-    //uint tagId;
-    //uint clientId;
-    //uint extendLength;
+    uint extendLength;
     ubyte[] data;
-    Extend extend;
+    ubyte[] extend;
     bool hasExtend;
 
     this()
@@ -41,28 +34,25 @@ class MessageBuffer
         id = 0;
         compression = 0;
         hasExtend = false;
-        //extendLength = 0;
-        //tagId = 0;
-        //clientId = 0;
+        extendLength = 0;
     }
 
     this(uint id, ubyte[] data) {
       this.id = id;
       this.data = data;
       hasExtend = false;
-      //this.extendLength = 0;
-      //this.clientId = 0;
+      this.extendLength = 0;
     }
 
-    this(uint id, ubyte[] data , Extend extend) {
+    this(uint id, ubyte[] data , ubyte[] extend) {
         this.id = id;
         this.data = data;
+        //this.extend = extend;
+        this.extendLength = cast(int)(extend.length);
+        //this.extend = new ubyte[extendLength];
         this.extend = extend;
         hasExtend = true;
-        //this.tagId = tagId;
-        //this.extendLength = uint.sizeof;
-        //this.clientId = 0;
-       // this.extend = nativeToBigEndian(tagId);
+
     }
 
     //this(uint id, ubyte[] data, uint tagId, uint clientId)

@@ -124,12 +124,12 @@ class PacketParser {
             {
                 //if(header.extendLength() == uint.sizeof)
                 //{
-                  ubyte[Extend.sizeof] d = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + cast(int)(header.extendLength())];
+                  ubyte[] d = data[PACKET_HEADER_LENGTH .. PACKET_HEADER_LENGTH + cast(int)(header.extendLength())];
                   //ubyte[Extend.sizeof] d
                   //uint tagId = bigEndianToNative!uint(d);
-                  Extend extend  = cast(Extend)d;
-                  logInfof("Extend : %s ---  %s -----%s" , header.extendLength(),extend.tagId, extend.userId);
-                  resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , extend);
+                  //Extend extend  = cast(Extend)d;
+                  //logInfof("Extend : %s ---  %s -----%s" , header.extendLength(),extend.tagId, extend.userId);
+                  resultBuffers ~= new MessageBuffer(header.messageId(), data[PACKET_HEADER_LENGTH + header.extendLength() ..currentFrameSize] , d);
                 //}
                 //else
                 //{

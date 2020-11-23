@@ -129,7 +129,7 @@ class PacketHeader
         ubyte[EXTENSION_FIELD_LENGTH] h3;
         if (message.hasExtend)
         {
-          h3 = nativeToBigEndian(cast(int)Extend.sizeof);
+          h3 = nativeToBigEndian(message.extendLength);
         }else
         {
           h3 = nativeToBigEndian(0);
