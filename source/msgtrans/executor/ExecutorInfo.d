@@ -15,7 +15,7 @@ import msgtrans.MessageBuffer;
 import msgtrans.TransportContext;
 import msgtrans.channel.TransportSession;
 
-import hunt.logging;
+import hunt.logging.ConsoleLogger;
 import witchcraft;
 
 import std.conv;
@@ -70,18 +70,9 @@ struct ExecutorInfo {
                 obj = _classInfo.create();
                 session.setAttribute(objectKey, obj);
             }
-            // switch(id)
-            // {
-            //     case 10001:
-            //         string msg = cast(string)codec.decode(ubyte[]);
-            //         this.hello(ctx, msg);
-            // }
-            // string msg = cast(string)codec.decode(ubyte[]);
             _methodInfo.invoke(obj, context, buffer);
         } catch (Throwable ex) {
-            //warning(ex.msg);
-            //version (HUNT_DEBUG)
-            //    warning(ex);
+            warning(ex);
         }
     }
 }
