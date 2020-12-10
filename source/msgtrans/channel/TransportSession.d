@@ -14,7 +14,7 @@ module msgtrans.channel.TransportSession;
 import msgtrans.MessageBuffer;
 import msgtrans.DefaultSessionManager;
 
-import hunt.util.Serialize;
+import hunt.serialization.JsonSerializer;
 import hunt.net;
 import hunt.logging;
 

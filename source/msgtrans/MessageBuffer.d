@@ -29,19 +29,23 @@ class MessageBuffer
     ubyte[] extend;
     bool hasExtend;
 
-    this()
-    {
+    this() {
         id = 0;
         compression = 0;
         hasExtend = false;
         extendLength = 0;
     }
 
+
+    this(uint id, string data) {
+        this(id, cast(ubyte[])data.dup);
+    }
+
     this(uint id, ubyte[] data) {
-      this.id = id;
-      this.data = data;
-      hasExtend = false;
-      this.extendLength = 0;
+        this.id = id;
+        this.data = data;
+        hasExtend = false;
+        this.extendLength = 0;
     }
 
     this(uint id, ubyte[] data , ubyte[] extend) {

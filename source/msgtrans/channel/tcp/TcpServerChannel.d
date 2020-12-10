@@ -258,7 +258,7 @@ class TcpServerChannel : ServerChannel {
                 peerkey_s peerkeys  =  cast(peerkey_s)(context.session().getAttribute("EE2E"));
                 if (peerkeys !is null && common.keyCalculate(MessageTransportServer.s_server_key, peerkeys))
                 {
-                    context.session().send(new MessageBuffer(MESSAGE.FINALIZE, []));
+                    context.session().send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])null));
                 }else
                 {
                     logError("peerkeys is null");

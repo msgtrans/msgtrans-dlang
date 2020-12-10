@@ -205,7 +205,7 @@ class TcpClientChannel : ClientChannel {
 
                 if (common.keyCalculate(MessageTransportClient.client_key,MessageTransportClient.server_key))
                 {
-                    send(new MessageBuffer(MESSAGE.FINALIZE,[]));
+                    send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])[]));
                 }else
                 {
                     logError("keyCalculate error");

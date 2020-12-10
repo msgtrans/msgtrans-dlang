@@ -17,7 +17,7 @@ import hunt.collection.List;
 import hunt.collection.ArrayList;
 
 import hunt.logging.ConsoleLogger;
-import hunt.util.Serialize;
+import hunt.serialization.JsonSerializer;
 
 import msgtrans.MessageBuffer;
 import msgtrans.PacketHeader;
