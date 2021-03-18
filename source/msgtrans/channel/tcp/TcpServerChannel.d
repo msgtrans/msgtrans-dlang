@@ -26,6 +26,8 @@ import msgtrans.ee2e.crypto;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
 import hunt.net.codec.Codec;
+import hunt.io.channel.Common;
+
 import google.protobuf;
 import std.array;
 import msgtrans.ee2e.common;
@@ -41,7 +43,7 @@ class TcpServerChannel : ServerChannel {
     private NetServer _server;
     private MessageTransport _messageTransport;
     private SessionManager _sessionManager;
-    private AcceptHandler _acceptHandler;
+    private msgtrans.TransportContext.AcceptHandler _acceptHandler;
     private CloseHandler _closeHandler;
     private string _name = typeof(this).stringof;
 
@@ -99,7 +101,7 @@ class TcpServerChannel : ServerChannel {
             _server.close();
     }
 
-    void onAccept(AcceptHandler handler) {
+    void onAccept(msgtrans.TransportContext.AcceptHandler handler) {
         _acceptHandler = handler;
     }
 
@@ -140,13 +142,15 @@ class TcpServerChannel : ServerChannel {
                 }
             }
 
-            override void messageReceived(Connection connection, Object message) {
+            override DataHandleStatus messageReceived(Connection connection, Object message) {
                 MessageBuffer buffer = cast(MessageBuffer) message;
                 if(buffer is null) {
                     warningf("expected type: MessageBuffer, message type: %s", typeid(message).name);
                 } else {
                     dispatchMessage(connection, buffer);
                 }
+
+                return DataHandleStatus.Done;
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {

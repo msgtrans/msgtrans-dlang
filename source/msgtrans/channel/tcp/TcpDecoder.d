@@ -16,6 +16,7 @@ import msgtrans.MessageBuffer;
 
 import hunt.io.ByteBuffer;
 import hunt.io.BufferUtils;
+import hunt.io.channel.Common;
 import hunt.Exceptions;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
@@ -91,26 +92,28 @@ class TcpDecoder : DecoderChain {
     }
 
     override
-    void decode(ByteBuffer buf, Connection connection) {
+    DataHandleStatus decode(ByteBuffer buf, Connection connection) {
         version(HUNT_MESSAGE_DEBUG) tracef("connection %d: %s", connection.getId(), buf.toString());
         PacketParser parser = getParser(connection);
 
         MessageBuffer[] msgBuffers = parser.parse(buf);
         if(msgBuffers is null) {
             warning("No frame parsed.");
-            return;
+            return DataHandleStatus.Done;
         }
 
         NetConnectionHandler handler = connection.getHandler();
         if(handler is null) {
             warning("No handler found.");
-            return;
+            return DataHandleStatus.Done;
         }
 
         foreach(MessageBuffer msg; msgBuffers) {
             handler.messageReceived(connection, msg);
         }
 
+
+        return DataHandleStatus.Done;
     }
 
     private PacketParser getParser(Connection connection) {

@@ -38,7 +38,7 @@ import std.stdio;
 class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     private HttpServer _server;
     private SessionManager _sessionManager;
-    private AcceptHandler _acceptHandler;
+    private msgtrans.TransportContext.AcceptHandler _acceptHandler;
     private CloseHandler _closeHandler;
     private MessageTransport _messageTransport;
 
@@ -67,7 +67,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
     //     _sessionManager = manager;
     // }
 
-    void onAccept(AcceptHandler handler) {
+    void onAccept(msgtrans.TransportContext.AcceptHandler handler) {
         _acceptHandler = handler;
     }
 

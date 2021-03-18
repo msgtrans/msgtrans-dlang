@@ -5,11 +5,10 @@
     "homepage": "http://www.huntlabs.net",
     "license": "Apache-2.0",
     "dependencies": {
-        "hunt-http": "~>0.6.9",
+        "hunt-http": "~>0.7.2",
         "hunt-reflection": "~>0.2.1",
-        "hunt" :"~>1.6.3",
-        "hunt-extra" :"~>1.0.3",
-        "hunt-openssl": "~>1.0.2",
+        "hunt-extra" :"~>1.1.0",
+        "hunt-openssl": "~>1.0.4",
         "protobuf": "~>0.6.2"
     }
 }

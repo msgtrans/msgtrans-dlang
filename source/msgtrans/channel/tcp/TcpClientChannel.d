@@ -21,23 +21,25 @@ import msgtrans.MessageBuffer;
 import msgtrans.MessageTransport;
 import msgtrans.Packet;
 import msgtrans.TransportContext;
-import google.protobuf;
-import std.array;
 import msgtrans.ee2e.message.MsgDefine;
 import msgtrans.ee2e.crypto;
 import msgtrans.ee2e.common;
 import msgtrans.MessageTransportClient;
 import hunt.Exceptions;
+import hunt.io.channel.Common;
 // import hunt.concurrency.FuturePromise;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
-import std.base64;
 
+import google.protobuf;
+
+import std.array;
+import std.base64;
+import std.format;
 
 import core.sync.condition;
 import core.sync.mutex;
 
-import std.format;
 
 /**
  *
@@ -123,13 +125,15 @@ class TcpClientChannel : ClientChannel {
                 // client.close();
             }
 
-            override void messageReceived(Connection connection, Object message) {
+            override DataHandleStatus messageReceived(Connection connection, Object message) {
                 MessageBuffer buffer = cast(MessageBuffer)message;
                 if(buffer is null) {
                     warningf("expected type: MessageBuffer, message type: %s", typeid(message).name);
                 } else {
                     dispatchMessage(connection, buffer);
                 }
+
+                return DataHandleStatus.Done;
             }
 
             override void exceptionCaught(Connection connection, Throwable t) {
