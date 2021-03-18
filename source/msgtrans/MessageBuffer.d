@@ -17,9 +17,6 @@ import std.bitmanip;
 /**
  *
  */
-
-
-
 class MessageBuffer
 {
     uint id;

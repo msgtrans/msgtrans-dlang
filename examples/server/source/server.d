@@ -32,7 +32,6 @@ enum MESSAGE : uint {
 }
 
 @TransportServer(ServerName)
-@TransportClient(ClientName)
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
 

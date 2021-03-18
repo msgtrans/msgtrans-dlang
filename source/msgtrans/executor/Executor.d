@@ -30,7 +30,7 @@ interface Executor {
         
         version(HUNT_DEBUG) {
             foreach(ExecutorInfo e; executors) {
-                tracef("Registing executor to %s, id: %d, method: %s in %s", name, e.messageId(), 
+                  tracef("Registing executor to %s, id: %d, method: %s in %s", name, e.messageId(), 
                     e.methodInfo().getName(), e.classInfo().getFullName());  
             }
         }     

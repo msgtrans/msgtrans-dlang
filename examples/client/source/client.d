@@ -13,6 +13,7 @@ void main()
     MessageTransportClient client = new MessageTransportClient("test");
 
     client.channel(new TcpClientChannel(Host, TcpChannelPort));
+    client.connect();
 
     string name = "zoujiaqing";
     auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
@@ -32,11 +33,6 @@ enum MESSAGE : uint
 @TransportClient("test")
 class MyExecutor : AbstractExecutor!(MyExecutor)
 {
-    this()
-    {
-
-    }
-
     @MessageId(MESSAGE.WELCOME)
     void welcome(TransportContext ctx, MessageBuffer buffer)
     {
