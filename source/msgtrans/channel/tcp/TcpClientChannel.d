@@ -18,6 +18,7 @@ import msgtrans.channel.TransportSession;
 import msgtrans.channel.tcp.TcpCodec;
 import msgtrans.channel.tcp.TcpTransportSession;
 import msgtrans.MessageBuffer;
+import msgtrans.MessageHandler;
 import msgtrans.MessageTransport;
 import msgtrans.Packet;
 import msgtrans.TransportContext;
@@ -92,7 +93,7 @@ class TcpClientChannel : ClientChannel {
         logInfo("salt :%s",keyInfo.salt_32bytes);
 
         logInfo("%s",keyInfo.ec_public_key_65bytes);
-        send(new MessageBuffer(MESSAGE.INITIATE,keyExchangeRes.toProtobuf.array));
+        send(new MessageBuffer(MESSAGE.INITIATE,keyExchangeRes.toProtobuf.array), null);
     }
 
     private void initialize() {
@@ -169,27 +170,52 @@ class TcpClientChannel : ClientChannel {
             return;
         }
 
-        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
-        if(executorInfo == ExecutorInfo.init) {
-            warning("No Executor found for id: ", messageId);
+        MessageHandler handler = _messageTransport.getMessageHandler(messageId);
+        if(handler is null) {
+            dispatchForExecutor(connection, messageId, message);
         } else {
-            enum string ChannelSession = "ChannelSession";
-            TcpTransportSession session = cast(TcpTransportSession)connection.getAttribute(ChannelSession);
-            if(session is null ){
-                session = new TcpTransportSession(nextClientSessionId(), connection);
-                connection.setAttribute(ChannelSession, session);
-            }
-
-            TransportContext context = TransportContext(null, session);
+            TransportContext context = getContext(connection);
 
             if (MessageTransportClient.isEE2E)
             {
                 logInfo("......................");
                 message = common.encrypted_decode(message,MessageTransportClient.server_key, true);
-            }
+            }            
+            handler(context, message);
+        }
 
+    }
+
+    private void dispatchForExecutor(Connection connection, uint messageId, MessageBuffer message) {
+
+        ExecutorInfo executorInfo = _messageTransport.getExecutor(messageId);
+        if(executorInfo == ExecutorInfo.init) {
+            warning("No Executor found for id: ", messageId);
+        } else {
+            TransportContext context = getContext(connection);
+
+            if (MessageTransportClient.isEE2E)
+            {
+                logInfo("......................");
+                message = common.encrypted_decode(message,MessageTransportClient.server_key, true);
+            }            
             executorInfo.execute(context, message);
         }
+    }
+
+    private TransportContext getContext(Connection connection) {
+
+        enum string ChannelSession = "ChannelSession";
+        TcpTransportSession session = cast(TcpTransportSession)connection.getAttribute(ChannelSession);
+        if(session is null ){
+            session = new TcpTransportSession(nextClientSessionId(), connection);
+            connection.setAttribute(ChannelSession, session);
+        }
+
+        TransportContext context = TransportContext(null, session);
+
+
+        return context;
     }
 
     private void keyExchangeRequest(MessageBuffer message, Connection connection)
@@ -209,7 +235,7 @@ class TcpClientChannel : ClientChannel {
 
                 if (common.keyCalculate(MessageTransportClient.client_key,MessageTransportClient.server_key))
                 {
-                    send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])[]));
+                    send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])[]), null);
                 }else
                 {
                     logError("keyCalculate error");
@@ -270,10 +296,15 @@ class TcpClientChannel : ClientChannel {
         return _client !is null && _client.isConnected();
     }
 
-    void send(MessageBuffer message) {
+    void send(MessageBuffer message, MessageHandler handler) {
         if(!isConnected()) {
             throw new IOException("Connection broken!");
         }
+
+        if(handler !is null) {
+            _messageTransport.attatch(message.id, handler);
+        }
+
         if (MessageTransportClient.isEE2E && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))
         {
             message = common.encrypted_encode(message,MessageTransportClient.client_key,MessageTransportClient.server_key);

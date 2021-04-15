@@ -15,6 +15,7 @@ import msgtrans.channel.ClientChannel;
 import msgtrans.executor;
 import msgtrans.MessageTransport;
 import msgtrans.MessageBuffer;
+import msgtrans.MessageHandler;
 import msgtrans.ee2e.crypto;
 import hunt.logging.ConsoleLogger;
 import msgtrans.TransportContext;
@@ -87,32 +88,33 @@ class MessageTransportClient : MessageTransport {
           _channel.onClose(_closeHandler);
           _isConnected = true;
         } catch(Exception e) {
+            warning(e);
             return false;
         }
 
         return true;
     }
 
-    void send(MessageBuffer buffer)
+    void send(MessageBuffer buffer, MessageHandler handler)
     {
-        _channel.send(buffer);
+        _channel.send(buffer, handler);
     }
 
-    void send(uint id, ubyte[] msg ) {
+    void send(uint id, ubyte[] msg, MessageHandler handler) {
         // if(_channel.isConnected()) {
 
         // } else {
         //     warning("Connection broken!");
         // }
-        _channel.send(new MessageBuffer(id, msg));
+        _channel.send(new MessageBuffer(id, msg), handler);
     }
 
     bool isConnected()
     {
       return _isConnected;
     }
-    void send(uint id, string msg ) {
-        this.send(id, cast(ubyte[]) msg);
+    void send(uint id, string msg, MessageHandler handler) {
+        this.send(id, cast(ubyte[]) msg, handler);
     }
 
     void close() {

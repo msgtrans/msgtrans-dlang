@@ -14,6 +14,7 @@ module msgtrans.channel.websocket.WebSocketClientChannel;
 import msgtrans.DefaultSessionManager;
 import msgtrans.executor;
 import msgtrans.MessageBuffer;
+import msgtrans.MessageHandler;
 import msgtrans.MessageTransport;
 import msgtrans.Packet;
 import msgtrans.TransportContext;
@@ -90,7 +91,7 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
             }
 
             override void onBinary(WebSocketConnection connection, ByteBuffer buffer)  {
-                byte[] data = buffer.getRemaining();
+                byte[] data = buffer.peekRemaining();
                 version(HUNT_DEBUG) {
                     tracef("received (from %s): %s", connection.getRemoteAddress(), buffer.toString());
                     if(data.length<=64)
@@ -117,9 +118,13 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
         return _connection !is null && _connection.getTcpConnection().isConnected();
     }
 
-    void send(MessageBuffer message) {
+    void send(MessageBuffer message, MessageHandler handler) {
         if(!isConnected()) {
             throw new IOException("Connection broken!");
+        }
+
+        if(handler !is null) {
+            _messageTransport.attatch(message.id, handler);
         }
 
         ubyte[][] buffers = Packet.encode(message);

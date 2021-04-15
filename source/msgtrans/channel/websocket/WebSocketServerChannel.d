@@ -134,7 +134,7 @@ class WebSocketServerChannel : WebSocketChannel, ServerChannel {
                 }
 
                 override void onBinary(WebSocketConnection connection, ByteBuffer buffer)  {
-                    byte[] data = buffer.getRemaining();
+                    byte[] data = buffer.peekRemaining();
                     version(HUNT_DEBUG) {
                         tracef("received (from %s): %s", connection.getRemoteAddress(), buffer.toString());
                         if(data.length<=64)

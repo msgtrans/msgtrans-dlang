@@ -12,6 +12,7 @@
 module msgtrans.MessageTransport;
 
 import msgtrans.MessageTransport;
+import msgtrans.MessageHandler;
 import msgtrans.SessionManager;
 import msgtrans.executor.Executor;
 import msgtrans.executor.ExecutorInfo;
@@ -31,6 +32,7 @@ enum CLIENT_NAME_PREFIX = "CLIENT-";
 abstract class MessageTransport {
     private string _name;
     private ExecutorInfo[uint] _executors;
+    private MessageHandler[uint] _messageHandlers;
 
     this(string name) {
         _name = name;
@@ -45,10 +47,24 @@ abstract class MessageTransport {
         return _name;
     }
 
+    void attatch(uint msgId, MessageHandler handler) {
+        _messageHandlers[msgId] = handler;
+    }
+    
+    MessageHandler getMessageHandler(uint id) {
+        auto itemPtr = id in _messageHandlers;
+        if(itemPtr is null) {
+            string msg = format("No message handler found for MessageID %d in peer %s", id, _name);
+            version(MSGTRANS_DEBUG) warning(msg);
+            return null;
+        }
+        return *itemPtr;
+    }
+
     ExecutorInfo getExecutor(uint id) {
         auto itemPtr = id in _executors;
         if(itemPtr is null) {
-            string msg = format("Can't find executor %d in server %s", id, _name);
+            string msg = format("No message handler found for MessageID %d in server %s", id, _name);
             version(HUNT_DEBUG) warning(msg);
             // throw new NoSuchElementException(msg);
             return ExecutorInfo.init;

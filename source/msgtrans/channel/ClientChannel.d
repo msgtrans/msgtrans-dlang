@@ -13,6 +13,7 @@ module msgtrans.channel.ClientChannel;
 
 import msgtrans.MessageBuffer;
 import msgtrans.MessageTransport;
+import msgtrans.MessageHandler;
 import msgtrans.TransportContext;
 
 // import hunt.net;
@@ -25,7 +26,7 @@ interface ClientChannel
 
     void set(MessageTransport transport);
 
-    void send(MessageBuffer buffer);
+    void send(MessageBuffer buffer, MessageHandler handler);
 
     void close();
 

@@ -85,7 +85,7 @@ class PacketParser {
         size_t dataStart = 0;
 
         while (_receivedPacketBuf.remaining() >= PACKET_HEADER_LENGTH) {
-            ubyte[] data = cast(ubyte[])_receivedPacketBuf.getRemaining();
+            ubyte[] data = cast(ubyte[])_receivedPacketBuf.peekRemaining();
             //infof("rev buff: %s ----- %d",data, data.length);
             PacketHeader header = PacketHeader.parse(data);
             if(header is null) {
@@ -157,7 +157,7 @@ class PacketParser {
         }
 
         if(remaining > 0) {
-            byte[] data = cast(byte[])_receivedPacketBuf.getRemaining();
+            byte[] data = cast(byte[])_receivedPacketBuf.peekRemaining();
             size_t newLength = max(remaining, _defaultBufferSize);
             if(_receivedPacketBuf is buffer || newLength > _receivedPacketBuf.capacity()) {
                 version(HUNT_DEBUG) infof("reset buffer's size to %d bytes", newLength);
