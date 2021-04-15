@@ -18,7 +18,11 @@ void main()
     string name = "zoujiaqing";
     auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
-    client.send(buffer);
+    client.send(buffer, (ctx, msgBuffer) {
+        auto welcomeText = cast(string) msgBuffer.data;
+        infof("message: %s", welcomeText);
+    });
+    
     getchar();
 
     client.close();
@@ -38,6 +42,6 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
     {
         auto welcomeText = cast(string) buffer.data;
 
-        infof("message: %s", welcomeText);
+        warningf("message: %s", welcomeText);
     }
 }

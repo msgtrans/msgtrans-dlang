@@ -42,5 +42,6 @@ class MyExecutor : AbstractExecutor!(MyExecutor)
         string welcomeText = "Hello " ~ name;
 
         ctx.session().send(new MessageBuffer(MESSAGE.WELCOME, welcomeText));
+        ctx.session().send(new MessageBuffer(MESSAGE.HELLO, welcomeText));
     }
 }
