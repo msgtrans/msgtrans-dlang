@@ -47,8 +47,20 @@ abstract class MessageTransport {
         return _name;
     }
 
-    void attatch(uint msgId, MessageHandler handler) {
+    void registerHandler(uint msgId, MessageHandler handler) {
+        auto itemPtr = msgId in _messageHandlers;
+        if(itemPtr !is null) {
+            throw new Exception(format("Message handler confliction: %d", msgId));
+        }
         _messageHandlers[msgId] = handler;
+    }
+
+    void deregisterHandler(uint msgId) {
+        auto itemPtr = msgId in _messageHandlers;
+        if(itemPtr !is null) {
+            throw new Exception(format("No message handler found: %d", msgId));
+        }
+        _messageHandlers.remove(msgId);
     }
     
     MessageHandler getMessageHandler(uint id) {

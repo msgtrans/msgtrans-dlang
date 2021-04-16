@@ -18,10 +18,12 @@ void main()
     string name = "zoujiaqing";
     auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
-    client.send(buffer, (ctx, msgBuffer) {
+    client.registerHandler(MESSAGE.HELLO, (ctx, msgBuffer) {
         auto welcomeText = cast(string) msgBuffer.data;
         infof("message: %s", welcomeText);
     });
+
+    client.send(buffer);
     
     getchar();
 

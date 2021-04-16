@@ -93,7 +93,7 @@ class TcpClientChannel : ClientChannel {
         logInfo("salt :%s",keyInfo.salt_32bytes);
 
         logInfo("%s",keyInfo.ec_public_key_65bytes);
-        send(new MessageBuffer(MESSAGE.INITIATE,keyExchangeRes.toProtobuf.array), null);
+        send(new MessageBuffer(MESSAGE.INITIATE,keyExchangeRes.toProtobuf.array));
     }
 
     private void initialize() {
@@ -178,7 +178,7 @@ class TcpClientChannel : ClientChannel {
 
             if (MessageTransportClient.isEE2E)
             {
-                logInfo("......................");
+                version(HUNT_DEBUG) logInfo("......................");
                 message = common.encrypted_decode(message,MessageTransportClient.server_key, true);
             }            
             handler(context, message);
@@ -235,7 +235,7 @@ class TcpClientChannel : ClientChannel {
 
                 if (common.keyCalculate(MessageTransportClient.client_key,MessageTransportClient.server_key))
                 {
-                    send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])[]), null);
+                    send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])[]));
                 }else
                 {
                     logError("keyCalculate error");
@@ -296,13 +296,9 @@ class TcpClientChannel : ClientChannel {
         return _client !is null && _client.isConnected();
     }
 
-    void send(MessageBuffer message, MessageHandler handler) {
+    void send(MessageBuffer message) {
         if(!isConnected()) {
             throw new IOException("Connection broken!");
-        }
-
-        if(handler !is null) {
-            _messageTransport.attatch(message.id, handler);
         }
 
         if (MessageTransportClient.isEE2E && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))

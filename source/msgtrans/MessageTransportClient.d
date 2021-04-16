@@ -95,26 +95,27 @@ class MessageTransportClient : MessageTransport {
         return true;
     }
 
-    void send(MessageBuffer buffer, MessageHandler handler)
+    void send(MessageBuffer buffer)
     {
-        _channel.send(buffer, handler);
+        _channel.send(buffer);
     }
 
-    void send(uint id, ubyte[] msg, MessageHandler handler) {
+    void send(uint id, ubyte[] msg) {
         // if(_channel.isConnected()) {
 
         // } else {
         //     warning("Connection broken!");
         // }
-        _channel.send(new MessageBuffer(id, msg), handler);
+        _channel.send(new MessageBuffer(id, msg));
     }
 
     bool isConnected()
     {
       return _isConnected;
     }
-    void send(uint id, string msg, MessageHandler handler) {
-        this.send(id, cast(ubyte[]) msg, handler);
+
+    void send(uint id, string msg,) {
+        this.send(id, cast(ubyte[]) msg);
     }
 
     void close() {

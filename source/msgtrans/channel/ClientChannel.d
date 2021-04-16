@@ -26,7 +26,7 @@ interface ClientChannel
 
     void set(MessageTransport transport);
 
-    void send(MessageBuffer buffer, MessageHandler handler);
+    void send(MessageBuffer buffer);
 
     void close();
 

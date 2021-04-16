@@ -118,13 +118,9 @@ class WebSocketClientChannel : WebSocketChannel, ClientChannel {
         return _connection !is null && _connection.getTcpConnection().isConnected();
     }
 
-    void send(MessageBuffer message, MessageHandler handler) {
+    void send(MessageBuffer message) {
         if(!isConnected()) {
             throw new IOException("Connection broken!");
-        }
-
-        if(handler !is null) {
-            _messageTransport.attatch(message.id, handler);
         }
 
         ubyte[][] buffers = Packet.encode(message);
