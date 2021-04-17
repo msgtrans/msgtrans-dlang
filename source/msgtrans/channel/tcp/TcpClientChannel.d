@@ -107,6 +107,12 @@ class TcpClientChannel : ClientChannel {
             override void connectionOpened(Connection connection) {
                 version(HUNT_DEBUG) infof("Connection created: %s", connection.getRemoteAddress());
                 _connection = connection;
+
+                _connectLocker.lock();
+                scope(exit) {
+                    _connectLocker.unlock();
+                }
+
                 _connectCondition.notifyAll();
                 if (MessageTransportClient.isEE2E)
                 {
@@ -144,6 +150,10 @@ class TcpClientChannel : ClientChannel {
             override void failedOpeningConnection(int connectionId, Throwable t) {
                 debug warning(t.msg);
                 // _client.close();
+                _connectLocker.lock();
+                scope(exit) {
+                    _connectLocker.unlock();
+                }                
                 _connectCondition.notifyAll();
             }
 
@@ -253,10 +263,6 @@ class TcpClientChannel : ClientChannel {
     }
 
     void connect() {
-        _connectLocker.lock();
-        scope(exit) {
-            _connectLocker.unlock();
-        }
 
         //if(_client !is null) {
         //    return;
@@ -268,6 +274,11 @@ class TcpClientChannel : ClientChannel {
 
         if(_client.isConnected())
             return;
+
+        _connectLocker.lock();
+        scope(exit) {
+            _connectLocker.unlock();
+        }
 
         Duration connectTimeout = _options.getConnectTimeout();
         if(connectTimeout.isNegative()) {
