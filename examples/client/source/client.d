@@ -16,14 +16,25 @@ void main()
     client.connect();
 
     string name = "zoujiaqing";
-    auto buffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
+    auto requestBuffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
-    client.registerHandler(MESSAGE.HELLO, (ctx, msgBuffer) {
-        auto welcomeText = cast(string) msgBuffer.data;
+    // {   // case 1
+    //     client.send(requestBuffer);
+    // }
+
+    // {   // case2
+    //     client.AsyncCall(requestBuffer, (ctx, responseBuffer) {
+    //         auto welcomeText = cast(string) responseBuffer.data;
+    //         infof("message: %s", welcomeText);
+    //     }); 
+    // }
+
+    {   // case3
+        MessageBuffer responseBuffer = client.Call(requestBuffer);
+        
+        auto welcomeText = cast(string) responseBuffer.data;
         infof("message: %s", welcomeText);
-    });
-
-    client.send(buffer);
+    }
     
     getchar();
 

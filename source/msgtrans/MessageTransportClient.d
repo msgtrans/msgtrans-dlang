@@ -17,8 +17,11 @@ import msgtrans.MessageTransport;
 import msgtrans.MessageBuffer;
 import msgtrans.MessageHandler;
 import msgtrans.ee2e.crypto;
-import hunt.logging.ConsoleLogger;
 import msgtrans.TransportContext;
+
+import hunt.logging.ConsoleLogger;
+import hunt.concurrency.FuturePromise;
+
 import core.time;
 
 /**
@@ -78,6 +81,11 @@ class MessageTransportClient : MessageTransport {
         return this;
     }
 
+    bool isConnected()
+    {
+      return _isConnected;
+    }
+
     bool connect()
     {
         assert(_channel !is null);
@@ -101,21 +109,34 @@ class MessageTransportClient : MessageTransport {
     }
 
     void send(uint id, ubyte[] msg) {
-        // if(_channel.isConnected()) {
-
-        // } else {
-        //     warning("Connection broken!");
-        // }
         _channel.send(new MessageBuffer(id, msg));
     }
 
-    bool isConnected()
-    {
-      return _isConnected;
+    void send(uint id, string msg) {
+        this.send(id, cast(ubyte[]) msg);
     }
 
-    void send(uint id, string msg,) {
-        this.send(id, cast(ubyte[]) msg);
+    
+    MessageBuffer Call(MessageBuffer buffer, Duration timeout = 5.seconds) {
+        FuturePromise!MessageBuffer promise = new FuturePromise!MessageBuffer();
+
+        this.registerHandler(buffer.id, (ctx, buf) {
+            promise.succeeded(buf);
+        });
+
+        scope(exit) {
+            this.deregisterHandler(buffer.id);
+        }
+
+        _channel.send(buffer);
+
+        MessageBuffer responseBuffer = promise.get(timeout);
+        return responseBuffer;
+    }
+
+    void AsyncCall(MessageBuffer buffer, MessageHandler handler) {
+        this.registerHandler(buffer.id, handler);
+        _channel.send(buffer);
     }
 
     void close() {
