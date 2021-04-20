@@ -18,23 +18,10 @@ void main()
     string name = "zoujiaqing";
     auto requestBuffer = new MessageBuffer(MESSAGE.HELLO, name.dup);
 
-    // {   // case 1
-    //     client.send(requestBuffer);
-    // }
-
-    // {   // case2
-    //     client.AsyncCall(requestBuffer, (ctx, responseBuffer) {
-    //         auto welcomeText = cast(string) responseBuffer.data;
-    //         infof("message: %s", welcomeText);
-    //     }); 
-    // }
-
-    {   // case3
-        MessageBuffer responseBuffer = client.Call(requestBuffer);
-        
+    client.AsyncCall(requestBuffer, (ctx, responseBuffer) {
         auto welcomeText = cast(string) responseBuffer.data;
         infof("message: %s", welcomeText);
-    }
+    }); 
     
     getchar();
 
