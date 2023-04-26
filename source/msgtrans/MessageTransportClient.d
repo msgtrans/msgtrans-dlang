@@ -16,7 +16,7 @@ import msgtrans.executor;
 import msgtrans.MessageTransport;
 import msgtrans.MessageBuffer;
 import msgtrans.MessageHandler;
-import msgtrans.ee2e.crypto;
+import msgtrans.e2ee.crypto;
 import msgtrans.TransportContext;
 
 import hunt.logging.ConsoleLogger;
@@ -30,7 +30,7 @@ import core.time;
 class MessageTransportClient : MessageTransport {
     private bool _isConnected = false;
     private ClientChannel _channel;
-    __gshared bool isEE2E;
+    __gshared bool isE2EE;
     __gshared ownkey_s  client_key;
     __gshared peerkey_s server_key;
     private CloseHandler  _closeHandler;
@@ -38,21 +38,21 @@ class MessageTransportClient : MessageTransport {
     {
         client_key = new ownkey_s;
         server_key = new peerkey_s;
-        isEE2E = false;
+        isE2EE = false;
     }
 
     // private Duration _tickPeriod = 10.seconds;
     // private Duration _ackTimeout = 30.seconds;
     // private uint _missedAcks = 3;
 
-    this(string name ,bool ee2e = false)
+    this(string name ,bool e2ee = false)
     {
         if (!name.length)
         {
             // Exeption?
         }
 
-        if(ee2e)
+        if(e2ee)
         {
             if (!generate_ecdh_keys(client_key.ec_pub_key, client_key.ec_priv_key))
             {
@@ -64,7 +64,7 @@ class MessageTransportClient : MessageTransport {
             {
                 logError("Random salt generation failed.");
             }
-            isEE2E = true;
+            isE2EE = true;
         }
 
         super(CLIENT_NAME_PREFIX ~ name);

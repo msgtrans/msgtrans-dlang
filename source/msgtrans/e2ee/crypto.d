@@ -1,4 +1,4 @@
-module msgtrans.ee2e.crypto;
+module msgtrans.e2ee.crypto;
 
 import hunt.logging;
 import deimos.openssl.ssl;

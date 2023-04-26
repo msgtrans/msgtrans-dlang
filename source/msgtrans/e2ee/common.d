@@ -1,7 +1,7 @@
-module msgtrans.ee2e.common;
+module msgtrans.e2ee.common;
 
-import msgtrans.ee2e.crypto;
-import msgtrans.ee2e.message.MsgDefine;
+import msgtrans.e2ee.crypto;
+import msgtrans.e2ee.message.MsgDefine;
 import hunt.logging;
 import msgtrans.MessageBuffer;
 import std.string;

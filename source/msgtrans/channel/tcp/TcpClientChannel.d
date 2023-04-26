@@ -22,9 +22,9 @@ import msgtrans.MessageHandler;
 import msgtrans.MessageTransport;
 import msgtrans.Packet;
 import msgtrans.TransportContext;
-import msgtrans.ee2e.message.MsgDefine;
-import msgtrans.ee2e.crypto;
-import msgtrans.ee2e.common;
+import msgtrans.e2ee.message.MsgDefine;
+import msgtrans.e2ee.crypto;
+import msgtrans.e2ee.common;
 import msgtrans.MessageTransportClient;
 import hunt.Exceptions;
 import hunt.io.channel.Common;
@@ -114,7 +114,7 @@ class TcpClientChannel : ClientChannel {
                 }
 
                 _connectCondition.notifyAll();
-                if (MessageTransportClient.isEE2E)
+                if (MessageTransportClient.isE2EE)
                 {
                   keyExchangeInitiate();
                 }
@@ -186,7 +186,7 @@ class TcpClientChannel : ClientChannel {
         } else {
             TransportContext context = getContext(connection);
 
-            if (MessageTransportClient.isEE2E)
+            if (MessageTransportClient.isE2EE)
             {
                 version(HUNT_DEBUG) logInfo("......................");
                 message = common.encrypted_decode(message,MessageTransportClient.server_key, true);
@@ -204,7 +204,7 @@ class TcpClientChannel : ClientChannel {
         } else {
             TransportContext context = getContext(connection);
 
-            if (MessageTransportClient.isEE2E)
+            if (MessageTransportClient.isE2EE)
             {
                 logInfo("......................");
                 message = common.encrypted_decode(message,MessageTransportClient.server_key, true);
@@ -312,7 +312,7 @@ class TcpClientChannel : ClientChannel {
             throw new IOException("Connection broken!");
         }
 
-        if (MessageTransportClient.isEE2E && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))
+        if (MessageTransportClient.isE2EE && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))
         {
             message = common.encrypted_encode(message,MessageTransportClient.client_key,MessageTransportClient.server_key);
         }

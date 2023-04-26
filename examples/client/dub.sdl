@@ -1,0 +1,6 @@
+name "client"
+description "A minimal D application."
+license "proprietary"
+dependency "msgtrans" path="../../"
+targetType "executable"
+versions "HUNT_DEBUG" "HUNT_NET_DEBUG"

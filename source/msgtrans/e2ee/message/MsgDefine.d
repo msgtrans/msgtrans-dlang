@@ -1,4 +1,4 @@
-module msgtrans.ee2e.message.MsgDefine;
+module msgtrans.e2ee.message.MsgDefine;
 
 import google.protobuf;
 

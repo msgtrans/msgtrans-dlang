@@ -17,7 +17,7 @@ import msgtrans.SessionManager;
 import msgtrans.DefaultSessionManager;
 import msgtrans.TransportContext;
 import msgtrans.executor;
-import msgtrans.ee2e.crypto;
+import msgtrans.e2ee.crypto;
 
 import hunt.logging.ConsoleLogger;
 
@@ -31,7 +31,7 @@ class MessageTransportServer : MessageTransport {
     private AcceptHandler _acceptHandler;
     private CloseHandler  _closeHandler;
     private ExecutorInfo[uint] _executors;
-    __gshared bool isEE2E ;
+    __gshared bool isE2EE ;
     private ServerChannel[string] _transportChannel;
     private SessionManager _sessionManager;
 
@@ -41,16 +41,16 @@ class MessageTransportServer : MessageTransport {
     shared static this()
     {
         s_server_key = new ownkey_s;
-        isEE2E = false;
+        isE2EE = false;
     }
 
-    this(string name, bool ee2e = false) {
+    this(string name, bool e2ee = false) {
         super(SERVER_NAME_PREFIX ~ name);
-        if(ee2e)
+        if(e2ee)
         {
             generate_ecdh_keys(s_server_key.ec_pub_key, s_server_key.ec_priv_key);
             rand_salt(s_server_key.salt,CRYPTO_SALT_LEN);
-            isEE2E = true;
+            isE2EE = true;
         }
     }
 

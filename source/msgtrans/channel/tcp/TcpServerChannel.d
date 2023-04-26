@@ -21,8 +21,8 @@ import msgtrans.channel.tcp.TcpTransportSession;
 import msgtrans.MessageTransportServer;
 import msgtrans.MessageBuffer;
 import msgtrans.executor;
-import msgtrans.ee2e.message.MsgDefine;
-import msgtrans.ee2e.crypto;
+import msgtrans.e2ee.message.MsgDefine;
+import msgtrans.e2ee.crypto;
 import hunt.logging.ConsoleLogger;
 import hunt.net;
 import hunt.net.codec.Codec;
@@ -30,7 +30,7 @@ import hunt.io.channel.Common;
 
 import google.protobuf;
 import std.array;
-import msgtrans.ee2e.common;
+import msgtrans.e2ee.common;
 import std.format;
 import std.uuid;
 import std.base64;
@@ -198,9 +198,9 @@ class TcpServerChannel : ServerChannel {
                 _sessionManager.add(session);
             }
             TransportContext context = TransportContext(_sessionManager, session);
-            if (MessageTransportServer.isEE2E)
+            if (MessageTransportServer.isE2EE)
             {
-                peerkey_s peerkeys = cast(peerkey_s)(context.session().getAttribute("EE2E"));
+                peerkey_s peerkeys = cast(peerkey_s)(context.session().getAttribute("E2EE"));
                 if(peerkeys !is null)
                 {
                     message = common.encrypted_decode(message,peerkeys);
@@ -241,7 +241,7 @@ class TcpServerChannel : ServerChannel {
                 peerkey_s peerkeys = new peerkey_s;
                 peerkeys.ec_pub_key = Base64.decode(keyExchangeRes.key_info.ec_public_key_65bytes);
                 peerkeys.salt = Base64.decode(keyExchangeRes.key_info.salt_32bytes);
-                context.session().setAttribute("EE2E",peerkeys);
+                context.session().setAttribute("E2EE",peerkeys);
                 logInfo("client pub : %s" ,peerkeys.ec_pub_key );
                 logInfo("client salt : %s" , peerkeys.salt);
 
@@ -259,7 +259,7 @@ class TcpServerChannel : ServerChannel {
             }
             case MESSAGE.FINALIZE :
             {
-                peerkey_s peerkeys  =  cast(peerkey_s)(context.session().getAttribute("EE2E"));
+                peerkey_s peerkeys  =  cast(peerkey_s)(context.session().getAttribute("E2EE"));
                 if (peerkeys !is null && common.keyCalculate(MessageTransportServer.s_server_key, peerkeys))
                 {
                     context.session().send(new MessageBuffer(cast(uint)MESSAGE.FINALIZE, cast(ubyte[])null));

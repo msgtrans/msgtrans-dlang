@@ -14,9 +14,9 @@ module msgtrans.channel.tcp.TcpTransportSession;
 import msgtrans.Packet;
 import msgtrans.MessageBuffer;
 import msgtrans.channel.TransportSession;
-import msgtrans.ee2e.message.MsgDefine;
-import msgtrans.ee2e.crypto;
-import msgtrans.ee2e.common;
+import msgtrans.e2ee.message.MsgDefine;
+import msgtrans.e2ee.crypto;
+import msgtrans.e2ee.common;
 import msgtrans.MessageTransportServer;
 import hunt.net;
 import hunt.String;
@@ -51,9 +51,9 @@ class TcpTransportSession : TransportSession {
     override void send(MessageBuffer message) {
         if (_conn.isConnected()) {
 
-            if (MessageTransportServer.isEE2E && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))
+            if (MessageTransportServer.isE2EE && (message.id != MESSAGE.INITIATE  && message.id != MESSAGE.FINALIZE))
             {
-                peerkey_s peerkeys = cast(peerkey_s)(getAttribute("EE2E"));
+                peerkey_s peerkeys = cast(peerkey_s)(getAttribute("E2EE"));
                 message = common.encrypted_encode(message,null, peerkeys);
             }
 
