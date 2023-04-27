@@ -33,11 +33,6 @@ class MessageBuffer
         extendLength = 0;
     }
 
-
-    this(uint id, string data) {
-        this(id, cast(ubyte[])data.dup);
-    }
-
     this(uint id, ubyte[] data) {
         this.id = id;
         this.data = data;
